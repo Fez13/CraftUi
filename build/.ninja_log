@@ -1,0 +1,14 @@
+# ninja log v5
+9	4402	1683838096056156543	CMakeFiles/CraftUI.dir/src/vulkan/vk_instance.cpp.o	ae29d674ea785699
+8	4269	1683838095924155199	CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o	7c820c6c8e1e6b30
+3055	3246	1683838402747233555	CraftUI	838e68c02e5a9a8
+2	3054	1683838402555231653	CMakeFiles/CraftUI.dir/src/vulkan/vk_graphic_device.cpp.o	d8fb540d568f555a
+1	2879	1683838402379229910	CMakeFiles/CraftUI.dir/main.cpp.o	64d5de1996225085
+4	4072	1683763393618517002	CMakeFiles/CraftUI.dir/src/vendor/tinyobjloader/tiny_obj_loader.cpp.o	e914f1ece57ac494
+4	2783	1683763392330502075	CMakeFiles/CraftUI.dir/src/vendor/stb/stb.cpp.o	7db6f871c1c25b65
+2	2871	1683838402371229830	CMakeFiles/CraftUI.dir/src/core/app.cpp.o	43a6449b6624125e
+5	3889	1683838095544151329	CMakeFiles/CraftUI.dir/src/renderer/renderer.cpp.o	95e2ad518132b798
+0	41	1683847172514836421	build.ninja	6adf6f7798ff2617
+2	3013	1683838402515231257	CMakeFiles/CraftUI.dir/src/vulkan/vk_utils.cpp.o	81419068d10c55a3
+2	2989	1683838402491231019	CMakeFiles/CraftUI.dir/src/vulkan/vulkan.cpp.o	d47fe1c5f528dd94
+2	3012	1683838402511231216	CMakeFiles/CraftUI.dir/src/vulkan/vk_device.cpp.o	9e9379cda5c9fdee

@@ -1,0 +1,57 @@
+[
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/main.cpp.o -c /home/federico/CLionProjects/CraftUi/main.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/main.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/core/app.cpp.o -c /home/federico/CLionProjects/CraftUi/src/core/app.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/core/app.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/renderer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/renderer.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/renderer.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_graphic_device.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_graphic_device.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_graphic_device.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_instance.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_instance.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_instance.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vulkan.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vulkan.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vulkan.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_utils.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_utils.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_utils.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_device.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_device.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_device.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vendor/stb/stb.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vendor/stb/stb.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vendor/stb/stb.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vendor/tinyobjloader/tiny_obj_loader.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vendor/tinyobjloader/tiny_obj_loader.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vendor/tinyobjloader/tiny_obj_loader.cpp"
+}
+]

@@ -1,0 +1,3 @@
+/home/federico/CLionProjects/CraftUi/build/CMakeFiles/CraftUI.dir
+/home/federico/CLionProjects/CraftUi/build/CMakeFiles/edit_cache.dir
+/home/federico/CLionProjects/CraftUi/build/CMakeFiles/rebuild_cache.dir
