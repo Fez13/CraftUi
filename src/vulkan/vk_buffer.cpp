@@ -23,7 +23,7 @@ void vk_buffer::initialize_buffer_memory(
   vkGetPhysicalDeviceMemoryProperties(vk_graphic_device::get().get_device(),
                                       &deviceMemoryProperties);
 
-  m_memory_index = findMemory(m_memory_properties, deviceMemoryProperties, 1);
+  m_memory_index = find_memory(m_memory_properties, deviceMemoryProperties, 1);
 
   vkGetBufferMemoryRequirements(m_device->get_device(), m_buffer,
                                 &m_memory_requirements);

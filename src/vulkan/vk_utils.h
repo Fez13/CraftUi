@@ -89,7 +89,7 @@ uint32_t getSuitableQueueFamily(
 //
 
 uint32_t
-findMemory(const VkMemoryPropertyFlags memory_properties,
+find_memory(const VkMemoryPropertyFlags memory_properties,
            VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
            const uint32_t memory_type = 1);
 
@@ -109,11 +109,32 @@ VkDescriptorPoolCreateInfo
 vkcDescriptorPoolCreateInfo(const uint32_t count,
                             const VkDescriptorPoolSize *pool_sizes);
 
-VkDescriptorSetAllocateInfo vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout, const VkDescriptorPool pool);
+VkDescriptorSetAllocateInfo
+vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout,
+                             const VkDescriptorPool pool);
 
 struct descriptor_binding {
   VkDescriptorType type;
   VkDescriptorSetLayoutBinding layout_binding;
   uint32_t count = 0;
 };
+
+//
+// Images
+//
+
+struct vkc_image_create_data {
+  glm::ivec2 size;
+  VkFormat format;
+  VkImageTiling tiling;
+  VkImageUsageFlags usage;
+  VkMemoryPropertyFlagBits properties;
+  VkImage image;
+  VkDeviceMemory image_memory;
+  VkImageLayout image_layout;
+};
+
+VkImageCreateInfo
+vkcImageCreateInfo(const vkc_image_create_data &data);
+
 } // namespace cui::vulkan

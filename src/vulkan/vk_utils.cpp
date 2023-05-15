@@ -147,7 +147,7 @@ uint32_t getSuitableQueueFamily(
 //
 
 uint32_t
-findMemory(const VkMemoryPropertyFlags memory_properties,
+find_memory(const VkMemoryPropertyFlags memory_properties,
            VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
            const uint32_t memory_type) {
   for (uint32_t i = 0; i < physical_device_memory_properties.memoryTypeCount;
@@ -207,11 +207,37 @@ VkDescriptorSetAllocateInfo
 vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout,
                              const VkDescriptorPool pool) {
   VkDescriptorSetAllocateInfo descriptor_set_allocate{};
-  descriptor_set_allocate.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  descriptor_set_allocate.sType =
+      VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
   descriptor_set_allocate.descriptorSetCount = 1;
   descriptor_set_allocate.pSetLayouts = layout;
   descriptor_set_allocate.descriptorPool = pool;
   descriptor_set_allocate.pNext = nullptr;
-  return descriptor_set_allocate; 
+  return descriptor_set_allocate;
 }
+
+//
+// Images
+//
+
+VkImageCreateInfo
+vkcImageCreateInfo(const vkc_image_create_data &data) {
+  VkImageCreateInfo image_info{};
+  image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+  image_info.imageType = VK_IMAGE_TYPE_2D;
+  image_info.extent.width = data.size.x;
+  image_info.extent.height = data.size.y;
+  image_info.extent.depth = 1;
+  image_info.mipLevels = 1;
+  image_info.arrayLayers = 1;
+  image_info.format = data.format;
+  image_info.tiling = data.tiling;
+  image_info.initialLayout = data.image_layout;
+  image_info.usage = data.usage;
+  image_info.samples = VK_SAMPLE_COUNT_1_BIT;
+  image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+  image_info.pNext = nullptr;
+  return image_info;
+}
+
 } // namespace cui::vulkan
