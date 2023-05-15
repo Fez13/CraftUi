@@ -11,12 +11,15 @@ void vk_instance::initialize(const char *app_name, const uint32_t app_version,
   VkApplicationInfo app_info =
       vkcApplicationInfo(app_name, app_version, api_version);
 
-  std::vector<const char*> available_extensions = set_available_extensions(extensions);
-  std::vector<const char*> available_layers = set_available_layers(layers);
-  
-  VkInstanceCreateInfo instance_create_info = vkcInstanceCreateInfo(app_info,available_extensions,available_layers);
-  
-  VK_CHECK(vkCreateInstance(&instance_create_info,nullptr,&m_instance));
+  std::vector<const char *> available_extensions =
+      set_available_extensions(extensions);
+  std::vector<const char *> available_layers = set_available_layers(layers);
+
+  VkInstanceCreateInfo instance_create_info =
+      vkcInstanceCreateInfo(app_info, available_extensions, available_layers);
+
+  VK_CHECK(vkCreateInstance(&instance_create_info, nullptr, &m_instance),
+           "Error in vulkan function, vkCreateInstance");
 }
 
 std::vector<VkExtensionProperties> vk_instance::get_availableExtensions() {

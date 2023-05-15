@@ -14,6 +14,7 @@ void App::initialize() {
   LOG("App initialization started." , TEXT_COLOR_NOTIFICATION);
   GET_ELAPSED();
   vulkan::initialize_vulkan();
+  vulkan::testing();
   
   
   

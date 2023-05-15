@@ -4,10 +4,15 @@
 #include "vk_graphic_device.h"
 #include "vk_instance.h"
 #include "vk_utils.h"
+#include "vk_buffer.h"
+#include "vk_descriptor_set.h"
 
 namespace cui::vulkan {
 
 // This will handel: instance creation, device creation, function
 // initialization.
 void initialize_vulkan();
+
+void testing();
+
 } // namespace cui::vulkan

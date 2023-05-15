@@ -15,18 +15,28 @@ public:
                                      VkPhysicalDeviceFeatures &)>
                       required_properties_and_features);
 
+  uint32_t get_device_family(std::string name) {
+    return m_device_families.get(name);
+  }
+
   static vk_graphic_device &get() { return s_instance; }
-  
-  VkPhysicalDevice get_device(){return m_physical_device;}
+
+  VkPhysicalDevice get_device() { return m_physical_device; }
 
 private:
   struct device_families {
   public:
-    uint32_t get(const std::string &name){return 1;};
+    uint32_t get(const std::string &name) {
+      ASSERT(data.contains(name),
+             "Error, family: " + name + " is not in the device",
+             TEXT_COLOR_ERROR);
+      return data[name];
+    };
     void set(const uint32_t &id, const std::string &name) {
       ASSERT(!data.contains(name),
              "Error, family: " + name + " is already in the device",
              TEXT_COLOR_ERROR);
+      data[name] = id;
     }
 
   private:

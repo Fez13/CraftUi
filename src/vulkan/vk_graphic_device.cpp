@@ -8,7 +8,7 @@ void vk_graphic_device::initialize(
     std::function<bool(VkPhysicalDeviceProperties &,
                        VkPhysicalDeviceFeatures &)>
         required_properties_and_features) {
-  LOG("Begging graphic device creation.", TEXT_COLOR_NOTIFICATION);
+  LOG("Begging of graphic device creation.", TEXT_COLOR_NOTIFICATION);
   uint32_t device_count = 0;
   vkEnumeratePhysicalDevices(vk_instance::get().get_instance(), &device_count,
                              nullptr);
@@ -49,12 +49,12 @@ void vk_graphic_device::initialize(
       getSuitableQueueFamily(m_physical_device,
                              [](const VkQueueFamilyProperties &fp) {
                                if ((fp.queueFlags & VK_QUEUE_COMPUTE_BIT) &&
-                                   ((fp.queueFlags & VK_QUEUE_GRAPHICS_BIT) ==
-                                    0))
+                                   (!(fp.queueFlags & VK_QUEUE_GRAPHICS_BIT)))
                                  return true;
                                return false;
                              }),
       "COMPUTE");
+
   m_device_families.set(
       getSuitableQueueFamily(m_physical_device,
                              [](const VkQueueFamilyProperties &fp) {
@@ -63,6 +63,7 @@ void vk_graphic_device::initialize(
                                return false;
                              }),
       "TRANSFER");
+  LOG("End of graphic device creation.", TEXT_COLOR_NOTIFICATION);
 }
 
 } // namespace cui::vulkan

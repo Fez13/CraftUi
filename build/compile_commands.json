@@ -46,6 +46,16 @@
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_descriptor_set.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_descriptor_set.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_descriptor_set.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_image.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_image.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_image.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vendor/stb/stb.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vendor/stb/stb.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/vendor/stb/stb.cpp"
 },

@@ -51,14 +51,23 @@ vkcDeviceCreateInfo(const std::vector<VkDeviceQueueCreateInfo> &queue_info,
                     const void *pnext);
 
 VkCommandPoolCreateInfo vkcCommandPoolCreateInfo(const uint32_t queue_index);
+
+VkBufferCreateInfo vkcBufferCreateInfo(const VkSharingMode sharing,
+                                       const size_t size,
+                                       const VkBufferUsageFlags usage);
+
+VkMemoryAllocateInfo vkcMemoryAllocateInfo(const uint32_t memory_index,
+                                           const size_t size);
+
 //
 // Structures
 //
+
+using queue_info = std::pair<std::string, uint32_t>;
+
 struct vkc_device_create_data {
   std::string device_name;
-  uint32_t graphic_family;
-  uint32_t compute_family;
-  uint32_t transfer_family;
+  std::vector<queue_info> queues;
   std::vector<const char *> *gpu_extensions;
   void *features_chain;
 };
@@ -79,4 +88,32 @@ uint32_t getSuitableQueueFamily(
 // Memory functions
 //
 
+uint32_t
+findMemory(const VkMemoryPropertyFlags memory_properties,
+           VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
+           const uint32_t memory_type = 1);
+
+//
+// Descriptor sets
+//
+
+VkDescriptorSetLayoutBinding vkcDescriptorSetLayoutBinding(
+    const uint32_t binding, const uint32_t count, const VkDescriptorType type,
+    const VkSampler *sampler, const VkShaderStageFlags stages);
+
+VkDescriptorSetLayoutCreateInfo
+vkcDescriptorSetLayoutCreateInfo(const uint32_t count,
+                                 const VkDescriptorSetLayoutBinding *bindings);
+
+VkDescriptorPoolCreateInfo
+vkcDescriptorPoolCreateInfo(const uint32_t count,
+                            const VkDescriptorPoolSize *pool_sizes);
+
+VkDescriptorSetAllocateInfo vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout, const VkDescriptorPool pool);
+
+struct descriptor_binding {
+  VkDescriptorType type;
+  VkDescriptorSetLayoutBinding layout_binding;
+  uint32_t count = 0;
+};
 } // namespace cui::vulkan

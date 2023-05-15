@@ -26,9 +26,9 @@ enum : text_color {
 #define GET_ELAPSED()                                                          \
   macros_functions::getElapsedTime<std::chrono::milliseconds>()
 
-#define VK_CHECK(function)                                                 \
+#define VK_CHECK(function,text)                                                 \
   if (function != VK_SUCCESS) {                                                \
-    macros_functions::log(std::string("Error in a vulkan function"),           \
+    macros_functions::log(std::string(text),           \
                           TEXT_COLOR_ERROR, __FILE__, __LINE__);               \
     throw std::runtime_error("Vulkan error");                                  \
   }

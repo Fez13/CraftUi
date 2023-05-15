@@ -11,36 +11,38 @@ public:
   vk_buffer(vk_device *device, const uint32_t &size,
             const VkBufferUsageFlags &usage, VkSharingMode sharing_mode);
 
-  void
-  create_buffer_memory_requirements(const VkMemoryPropertyFlags &memory_properties,
-                                 const VkPhysicalDevice &physical_device);
-
-  void allocate_memory();
+  // This will handel creation of requirements, allocation and binding.
+  void initialize_buffer_memory(const VkMemoryPropertyFlags &memory_properties);
 
   template <class T> T *get_memory_location() {
     void *data;
-    vkMapMemory(m_mainDevice->device, m_memory, 0, m_size, 0, &data);
+    vkMapMemory(m_device->get_device(), m_memory, 0, m_size, 0, &data);
     return static_cast<T *>(data);
   }
 
   void unmap_memory();
 
-  VkBuffer get_buffer() const;
+  VkBuffer get_buffer() const { return m_buffer; };
 
   VkDeviceAddress get_address() const;
 
-  void copy_from(vk_buffer* buffer);
+  void copy_from(vk_buffer *buffer);
+
+  VkBufferUsageFlags get_usage() const { return m_usages; }
 
   void free();
 
-  void bindBuffer();
-
-  size_t getSize() const;
+  size_t get_size() const{return m_size;};
 
 private:
-  
-  
-
+  size_t m_size = 0;
+  uint32_t m_memory_index = 0;
+  vk_device *m_device = nullptr;
+  VkBuffer m_buffer = nullptr;
+  VkBufferUsageFlags m_usages;
+  VkDeviceMemory m_memory = nullptr;
+  VkMemoryRequirements m_memory_requirements;
+  VkMemoryPropertyFlags m_memory_properties;
 };
 
 } // namespace cui::vulkan

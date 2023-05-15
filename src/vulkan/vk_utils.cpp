@@ -65,8 +65,13 @@ vkcDeviceCreateInfo(const std::vector<VkDeviceQueueCreateInfo> &queue_info,
   device_create_info.pQueueCreateInfos = queue_info.data();
   device_create_info.queueCreateInfoCount = queue_info.size();
   device_create_info.pEnabledFeatures = features;
-  device_create_info.ppEnabledExtensionNames = extensions->data();
-  device_create_info.enabledExtensionCount = extensions->size();
+  if (extensions != nullptr) {
+    device_create_info.ppEnabledExtensionNames = extensions->data();
+    device_create_info.enabledExtensionCount = extensions->size();
+  } else {
+    device_create_info.ppEnabledExtensionNames = VK_NULL_HANDLE;
+    device_create_info.enabledExtensionCount = 0;
+  }
   device_create_info.pNext = pnext;
   return device_create_info;
 }
@@ -78,6 +83,27 @@ VkCommandPoolCreateInfo vkcCommandPoolCreateInfo(const uint32_t queue_index) {
   poolCreateInfo.queueFamilyIndex = queue_index;
   poolCreateInfo.pNext = VK_NULL_HANDLE;
   return poolCreateInfo;
+}
+
+VkBufferCreateInfo vkcBufferCreateInfo(const VkSharingMode sharing,
+                                       const size_t size,
+                                       const VkBufferUsageFlags usage) {
+  VkBufferCreateInfo bufferCreateInfo{};
+  bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+  bufferCreateInfo.sharingMode = sharing;
+  bufferCreateInfo.size = size;
+  bufferCreateInfo.usage = usage;
+  return bufferCreateInfo;
+}
+
+VkMemoryAllocateInfo vkcMemoryAllocateInfo(const uint32_t memory_index,
+                                           const size_t size) {
+  VkMemoryAllocateInfo allocateInfo{};
+  allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+  allocateInfo.allocationSize = size;
+  allocateInfo.memoryTypeIndex = memory_index;
+  allocateInfo.pNext = nullptr;
+  return allocateInfo;
 }
 
 //
@@ -113,6 +139,79 @@ uint32_t getSuitableQueueFamily(
       return i;
   ASSERT(false, "There isn't any queue whit the requested capabilities.",
          TEXT_COLOR_ERROR);
-  return -1;
+  return UINT32_MAX;
+}
+
+//
+// Memory functions
+//
+
+uint32_t
+findMemory(const VkMemoryPropertyFlags memory_properties,
+           VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
+           const uint32_t memory_type) {
+  for (uint32_t i = 0; i < physical_device_memory_properties.memoryTypeCount;
+       i++) {
+    if (!(memory_type & (1 < i)))
+      continue;
+
+    if ((physical_device_memory_properties.memoryTypes[i].propertyFlags &
+         memory_properties) == memory_properties)
+      return i;
+  }
+  ASSERT(true, "Couldn't find memory properties", TEXT_COLOR_ERROR);
+  return UINT32_MAX;
+}
+
+//
+// Descriptor sets
+//
+
+VkDescriptorSetLayoutBinding vkcDescriptorSetLayoutBinding(
+    const uint32_t binding, const uint32_t count, const VkDescriptorType type,
+    const VkSampler *sampler, const VkShaderStageFlags stages) {
+  VkDescriptorSetLayoutBinding obj;
+  obj.binding = binding;
+  obj.descriptorCount = count;
+  obj.descriptorType = type;
+  obj.pImmutableSamplers = sampler;
+  obj.stageFlags = stages;
+  return obj;
+}
+
+VkDescriptorSetLayoutCreateInfo
+vkcDescriptorSetLayoutCreateInfo(const uint32_t count,
+                                 const VkDescriptorSetLayoutBinding *bindings) {
+  VkDescriptorSetLayoutCreateInfo createInfo{};
+  createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  createInfo.bindingCount = count;
+  createInfo.pBindings = bindings;
+  createInfo.pNext = nullptr;
+  return createInfo;
+}
+
+VkDescriptorPoolCreateInfo
+vkcDescriptorPoolCreateInfo(const uint32_t count,
+                            const VkDescriptorPoolSize *pool_sizes) {
+  VkDescriptorPoolCreateInfo descriptor_pool_create{};
+  descriptor_pool_create.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  descriptor_pool_create.flags =
+      VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+  descriptor_pool_create.poolSizeCount = count;
+  descriptor_pool_create.pPoolSizes = pool_sizes;
+  descriptor_pool_create.maxSets = count;
+  return descriptor_pool_create;
+}
+
+VkDescriptorSetAllocateInfo
+vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout,
+                             const VkDescriptorPool pool) {
+  VkDescriptorSetAllocateInfo descriptor_set_allocate{};
+  descriptor_set_allocate.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  descriptor_set_allocate.descriptorSetCount = 1;
+  descriptor_set_allocate.pSetLayouts = layout;
+  descriptor_set_allocate.descriptorPool = pool;
+  descriptor_set_allocate.pNext = nullptr;
+  return descriptor_set_allocate; 
 }
 } // namespace cui::vulkan
