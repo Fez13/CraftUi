@@ -60,7 +60,7 @@ void testing() {
       test_buffer_dst.copy_from(&test_buffer_src);
 
       ASSERT(test_buffer_dst.get_memory_location<int>()[0] == 1,
-             "Error coping data form buffer.", TEXT_COLOR_ERROR);
+             "Error copying data form buffer.", TEXT_COLOR_ERROR);
       test_buffer_dst.free();
       test_buffer_src.free();
       LOG("\t Buffer_test completed.", TEXT_COLOR_NOTIFICATION);
