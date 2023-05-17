@@ -84,7 +84,7 @@ void vk_buffer::free() {
   vkFreeMemory(m_device->get_device(), m_memory, nullptr);
 }
 
-void vk_buffer::copy_to_image(VkImage image, const glm::uvec3 size) {
+void vk_buffer::copy_to_image(VkImage &image, const glm::uvec3 size) {
   if (!(m_usages & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)) {
     LOG("Wen writing in a gpu buffer/image the source must have the "
         "'VK_BUFFER_USAGE_TRANSFER_SRC_BIT' flag, the operation will be "
