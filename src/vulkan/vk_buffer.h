@@ -28,7 +28,7 @@ public:
 
   void copy_from(vk_buffer *buffer);
   
-  void copy_to_image(VkImage image, const glm::uvec3 size);
+  void copy_to_image(VkImage &image, const glm::uvec3 size);
 
   VkBufferUsageFlags get_usage() const { return m_usages; }
 
