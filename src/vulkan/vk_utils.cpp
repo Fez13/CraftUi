@@ -93,6 +93,7 @@ VkBufferCreateInfo vkcBufferCreateInfo(const VkSharingMode sharing,
   bufferCreateInfo.sharingMode = sharing;
   bufferCreateInfo.size = size;
   bufferCreateInfo.usage = usage;
+  bufferCreateInfo.pNext = nullptr;
   return bufferCreateInfo;
 }
 

@@ -2,9 +2,9 @@
 
 namespace cui::vulkan {
 
-void transition_image_layout(vk_device *device, VkImage image, VkFormat format,
-                             VkImageLayout old_layout,
-                             VkImageLayout new_layout) {
+void transition_image_layout(vk_device *device, VkImage& image,const VkFormat format,
+                             const VkImageLayout old_layout,
+                             const VkImageLayout new_layout) {
   VkCommandBuffer cmd = device->create_one_time_use_command_buffer(
       VK_COMMAND_BUFFER_LEVEL_PRIMARY, "GRAPHIC");
   VkImageMemoryBarrier image_barrier =
@@ -38,7 +38,7 @@ void transition_image_layout(vk_device *device, VkImage image, VkFormat format,
 }
 
 void create_image_view(const VkImageViewType view_type, const VkFormat format,
-                       vk_device *device, VkImageView image_view, VkImage image,
+                       vk_device *device, VkImageView& image_view, VkImage& image,
                        const VkImageAspectFlags aspect_flags,
                        const uint32_t baseMinp, const uint32_t base_array,
                        const uint32_t level_count, const uint32_t layer_count) {
@@ -71,7 +71,6 @@ vk_image::vk_image(const std::string path, const std::string device_name,
   vk_buffer image_data_gpu(m_device, m_size_x * m_size_y * m_texture_channels_count,
                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                            VK_SHARING_MODE_EXCLUSIVE);
-
   image_data_gpu.initialize_buffer_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                                           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
   void *image_data_gpu_p = image_data_gpu.get_memory_location<void *>();

@@ -10,8 +10,8 @@ namespace cui::vulkan {
 
 
   void create_image_view(const VkImageViewType view_type,const VkFormat format,
-                         vk_device* device,VkImageView image_view,
-                         VkImage image,const VkImageAspectFlags aspect_flags,
+                         vk_device* device,VkImageView& image_view,
+                         VkImage& image,const VkImageAspectFlags aspect_flags,
                          const uint32_t baseMinp,const uint32_t base_array,
                          const uint32_t level_count,const uint32_t layer_count);
 class vk_image {

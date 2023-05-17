@@ -10,7 +10,7 @@ vk_buffer::vk_buffer(vk_device *device, const uint32_t size,
   VK_CHECK(vkCreateBuffer(m_device->get_device(), &create_buffer, nullptr,
                           &m_buffer),
            "Error creating buffer of size: " + std::to_string(size));
-  m_memory_requirements.size = size;
+  m_memory_requirements.size = m_size;
 }
 
 void vk_buffer::initialize_buffer_memory(
@@ -18,7 +18,7 @@ void vk_buffer::initialize_buffer_memory(
 
   // Gets appropiate memory
   m_memory_properties = memory_properties;
-
+  
   VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
   vkGetPhysicalDeviceMemoryProperties(vk_graphic_device::get().get_device(),
                                       &deviceMemoryProperties);
@@ -29,7 +29,8 @@ void vk_buffer::initialize_buffer_memory(
                                 &m_memory_requirements);
   // Allocates memory
   VkMemoryAllocateInfo memory_allocate_info =
-      vkcMemoryAllocateInfo(m_memory_index, m_size);
+      vkcMemoryAllocateInfo(m_memory_index, m_memory_requirements.size);
+      
   VK_CHECK(vkAllocateMemory(m_device->get_device(), &memory_allocate_info,
                             nullptr, &m_memory),
            "Error allocating gpu buffer");
