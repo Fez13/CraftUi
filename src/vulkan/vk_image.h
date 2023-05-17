@@ -8,8 +8,12 @@
 
 namespace cui::vulkan {
 
-void create_image(vkc_image_create_data &data,vk_device* device);
 
+  void create_image_view(const VkImageViewType view_type,const VkFormat format,
+                         vk_device* device,VkImageView image_view,
+                         VkImage image,const VkImageAspectFlags aspect_flags,
+                         const uint32_t baseMinp,const uint32_t base_array,
+                         const uint32_t level_count,const uint32_t layer_count);
 class vk_image {
 public:
   vk_image() = default;
@@ -22,9 +26,10 @@ public:
 
   VkImage get_image() const { return m_image; };
   VkImageView get_image_view() const { return m_image_view; };
-
+  void free() const;
 private:
-  void create_image(vk_buffer &buffer);
+  void fill_image(vk_buffer &buffer);
+  void create_image();
 
   int m_texture_channels_count;
   int m_size_x;
@@ -33,6 +38,6 @@ private:
   VkImage m_image;
   VkDeviceMemory m_memory;
   VkImageView m_image_view;
-  vk_device *device;
+  vk_device *m_device;
 };
 } // namespace cui::vulkan

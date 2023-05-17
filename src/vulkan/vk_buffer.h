@@ -8,11 +8,11 @@ class vk_buffer {
 public:
   explicit vk_buffer() = default;
 
-  vk_buffer(vk_device *device, const uint32_t &size,
-            const VkBufferUsageFlags &usage, VkSharingMode sharing_mode);
+  vk_buffer(vk_device *device, const uint32_t size,
+            const VkBufferUsageFlags usage,const VkSharingMode sharing_mode);
 
   // This will handel creation of requirements, allocation and binding.
-  void initialize_buffer_memory(const VkMemoryPropertyFlags &memory_properties);
+  void initialize_buffer_memory(const VkMemoryPropertyFlags memory_properties);
 
   template <class T> T *get_memory_location() {
     void *data;
@@ -27,6 +27,8 @@ public:
   VkDeviceAddress get_address() const;
 
   void copy_from(vk_buffer *buffer);
+  
+  void copy_to_image(VkImage image, const glm::uvec3 size);
 
   VkBufferUsageFlags get_usage() const { return m_usages; }
 

@@ -90,8 +90,8 @@ uint32_t getSuitableQueueFamily(
 
 uint32_t
 find_memory(const VkMemoryPropertyFlags memory_properties,
-           VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
-           const uint32_t memory_type = 1);
+            VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
+            const uint32_t memory_type = 1);
 
 //
 // Descriptor sets
@@ -123,18 +123,22 @@ struct descriptor_binding {
 // Images
 //
 
-struct vkc_image_create_data {
-  glm::ivec2 size;
-  VkFormat format;
-  VkImageTiling tiling;
-  VkImageUsageFlags usage;
-  VkMemoryPropertyFlagBits properties;
-  VkImage image;
-  VkDeviceMemory image_memory;
-  VkImageLayout image_layout;
-};
 
-VkImageCreateInfo
-vkcImageCreateInfo(const vkc_image_create_data &data);
+
+VkImageCreateInfo vkcImageCreateInfo(const glm::ivec2 size,
+                                     const VkFormat format,
+                                     const VkImageTiling tiling,
+                                     const VkImageUsageFlags usage,
+                                     const VkImageLayout image_layout);
+
+VkImageMemoryBarrier vkcImageMemoryBarrier(const VkImageLayout old_layout,
+                                           const VkImageLayout new_layout,
+                                           VkImage image);
+
+VkImageViewCreateInfo
+vkcImageViewCreateInfo(const VkImageViewType view_type, VkImage image,
+                       const VkFormat format, const VkImageAspectFlags flags,
+                       const uint32_t baseMinp = 0,const uint32_t base_array = 0,
+                       const uint32_t level_count = 1,const uint32_t layer_count = 1);
 
 } // namespace cui::vulkan

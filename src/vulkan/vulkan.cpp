@@ -88,6 +88,12 @@ void testing() {
       LOG("\t Descriptor_test completed.", TEXT_COLOR_NOTIFICATION);
 
     }
+    {
+      vk_image image("/home/federico/CLionProjects/CraftUi/resources/images/Screenshot from 2022-11-05 20-40-04.png","main");   
+      image.free();
+      LOG("\t Image_test completed.", TEXT_COLOR_NOTIFICATION);
+    }
+    
 
   } catch (std::runtime_error error) {
     LOG("Testing ended with error: " + error.what(),TEXT_COLOR_ERROR);

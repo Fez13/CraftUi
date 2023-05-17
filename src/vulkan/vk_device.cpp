@@ -91,6 +91,10 @@ VkCommandBuffer vk_device::create_one_time_use_command_buffer(
 void vk_device::submit_command_buffer(VkCommandBuffer *cmd,
                                       const uint32_t count,
                                       const std::string &pool_name) {
+
+  for (uint32_t i = 0; i < count; i++)
+    vkEndCommandBuffer(cmd[i]);
+
   VkSubmitInfo submitInfo{};
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = count;

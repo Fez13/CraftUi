@@ -148,8 +148,8 @@ uint32_t getSuitableQueueFamily(
 
 uint32_t
 find_memory(const VkMemoryPropertyFlags memory_properties,
-           VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
-           const uint32_t memory_type) {
+            VkPhysicalDeviceMemoryProperties physical_device_memory_properties,
+            const uint32_t memory_type) {
   for (uint32_t i = 0; i < physical_device_memory_properties.memoryTypeCount;
        i++) {
     if (!(memory_type & (1 < i)))
@@ -220,24 +220,72 @@ vkcDescriptorSetAllocateInfo(const VkDescriptorSetLayout *layout,
 // Images
 //
 
-VkImageCreateInfo
-vkcImageCreateInfo(const vkc_image_create_data &data) {
+VkImageCreateInfo vkcImageCreateInfo(const glm::ivec2 size,
+                                     const VkFormat format,
+                                     const VkImageTiling tiling,
+                                     const VkImageUsageFlags usage,
+                                     const VkImageLayout image_layout) {
   VkImageCreateInfo image_info{};
   image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
   image_info.imageType = VK_IMAGE_TYPE_2D;
-  image_info.extent.width = data.size.x;
-  image_info.extent.height = data.size.y;
+  image_info.extent.width = size.x;
+  image_info.extent.height = size.y;
   image_info.extent.depth = 1;
   image_info.mipLevels = 1;
   image_info.arrayLayers = 1;
-  image_info.format = data.format;
-  image_info.tiling = data.tiling;
-  image_info.initialLayout = data.image_layout;
-  image_info.usage = data.usage;
+  image_info.format = format;
+  image_info.tiling = tiling;
+  image_info.initialLayout = image_layout;
+  image_info.usage = usage;
   image_info.samples = VK_SAMPLE_COUNT_1_BIT;
   image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
   image_info.pNext = nullptr;
   return image_info;
+}
+
+VkImageMemoryBarrier vkcImageMemoryBarrier(const VkImageLayout old_layout,
+                                           const VkImageLayout new_layout,
+                                           VkImage image) {
+
+  VkImageMemoryBarrier barrier{};
+  barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+  barrier.oldLayout = old_layout;
+  barrier.newLayout = new_layout;
+  barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.image = image;
+  barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  barrier.subresourceRange.baseMipLevel = 0;
+  barrier.subresourceRange.levelCount = 1;
+  barrier.subresourceRange.baseArrayLayer = 0;
+  barrier.subresourceRange.layerCount = 1;
+  barrier.pNext = nullptr;
+  return barrier;
+}
+
+VkImageViewCreateInfo vkcImageViewCreateInfo(
+    const VkImageViewType view_type, VkImage image, const VkFormat format,
+    const VkImageAspectFlags flags, const uint32_t baseMinp,
+    const uint32_t base_array, const uint32_t level_count,
+    const uint32_t layer_count) {
+
+  VkImageViewCreateInfo info{};
+  info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+  info.viewType = view_type;
+  info.image = image;
+  info.format = format;
+  info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+  info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+  info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+  info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+  info.subresourceRange.aspectMask = flags;
+  info.subresourceRange.baseMipLevel = baseMinp;
+  info.subresourceRange.levelCount = level_count;
+  info.subresourceRange.baseArrayLayer = base_array;
+  info.subresourceRange.layerCount = layer_count;
+  info.pNext = nullptr;
+  return info;
 }
 
 } // namespace cui::vulkan

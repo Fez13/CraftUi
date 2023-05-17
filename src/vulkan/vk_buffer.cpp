@@ -1,20 +1,20 @@
 #include "vk_buffer.h"
 
 namespace cui::vulkan {
-vk_buffer::vk_buffer(vk_device *device, const uint32_t &size,
-                     const VkBufferUsageFlags &usage,
-                     VkSharingMode sharing_mode)
+vk_buffer::vk_buffer(vk_device *device, const uint32_t size,
+                     const VkBufferUsageFlags usage,
+                     const VkSharingMode sharing_mode)
     : m_device(device), m_size(size), m_usages(usage) {
   VkBufferCreateInfo create_buffer =
       vkcBufferCreateInfo(sharing_mode, size, usage);
   VK_CHECK(vkCreateBuffer(m_device->get_device(), &create_buffer, nullptr,
                           &m_buffer),
            "Error creating buffer of size: " + std::to_string(size));
-  m_memory_requirements.size = m_size;
+  m_memory_requirements.size = size;
 }
 
 void vk_buffer::initialize_buffer_memory(
-    const VkMemoryPropertyFlags &memory_properties) {
+    const VkMemoryPropertyFlags memory_properties) {
 
   // Gets appropiate memory
   m_memory_properties = memory_properties;
@@ -51,7 +51,7 @@ VkDeviceAddress vk_buffer::get_address() const {
 }
 
 void vk_buffer::copy_from(vk_buffer *buffer) {
-  
+
   if (!(buffer->get_usage() & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)) {
     LOG("Wen writing in a gpu buffer the source must have the "
         "'VK_BUFFER_USAGE_TRANSFER_SRC_BIT' flag, the operation will be "
@@ -75,8 +75,6 @@ void vk_buffer::copy_from(vk_buffer *buffer) {
   bufferCopy.size = m_size;
 
   vkCmdCopyBuffer(cmd, buffer->get_buffer(), m_buffer, 1, &bufferCopy);
-  vkEndCommandBuffer(cmd);
-
   m_device->submit_command_buffer(&cmd, 1, "TRANSFER");
   m_device->wait_to_finish("TRANSFER");
 }
@@ -84,6 +82,37 @@ void vk_buffer::copy_from(vk_buffer *buffer) {
 void vk_buffer::free() {
   vkDestroyBuffer(m_device->get_device(), m_buffer, nullptr);
   vkFreeMemory(m_device->get_device(), m_memory, nullptr);
+}
+
+void vk_buffer::copy_to_image(VkImage image, const glm::uvec3 size) {
+  if (!(m_usages & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)) {
+    LOG("Wen writing in a gpu buffer/image the source must have the "
+        "'VK_BUFFER_USAGE_TRANSFER_SRC_BIT' flag, the operation will be "
+        "aborted.",
+        TEXT_COLOR_ERROR);
+    return;
+  }
+
+  VkCommandBuffer cmd = m_device->create_one_time_use_command_buffer(
+      VK_COMMAND_BUFFER_LEVEL_PRIMARY, "TRANSFER");
+
+  VkBufferImageCopy region{};
+  region.bufferOffset = 0;
+  region.bufferRowLength = 0;
+  region.bufferImageHeight = 0;
+  region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  region.imageSubresource.mipLevel = 0;
+  region.imageSubresource.baseArrayLayer = 0;
+  region.imageSubresource.layerCount = 1;
+
+  region.imageOffset = {0, 0, 0};
+  region.imageExtent = {size.x, size.y, size.z};
+
+  vkCmdCopyBufferToImage(cmd, m_buffer, image,
+                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+  m_device->submit_command_buffer(&cmd, 1, "TRANSFER");
+  m_device->wait_to_finish("TRANSFER");
 }
 
 } // namespace cui::vulkan
