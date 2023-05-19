@@ -47,11 +47,12 @@ void vk_descriptor_set::initialize_layout() {
 void vk_descriptor_set::allocate_descriptor_set() {
   VkDescriptorSetAllocateInfo allocate_info = vkcDescriptorSetAllocateInfo(
       &m_descriptor_set_layout, m_descriptor_set_pool);
-      
+
   VK_CHECK(vkAllocateDescriptorSets(m_device->get_device(), &allocate_info,
                                     &m_descriptor_set),
            "Error allocating a descriptorSet.");
 }
+
 
 void vk_descriptor_set::create_binding_uniform_buffer(
     uint32_t binding, const VkShaderStageFlagBits stages,
