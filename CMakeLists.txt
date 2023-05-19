@@ -21,6 +21,7 @@ src/vulkan/vk_utils.h src/vulkan/vk_utils.cpp
 src/vulkan/vk_device.h src/vulkan/vk_device.cpp 
 src/vulkan/vk_descriptor_set.h src/vulkan/vk_descriptor_set.cpp 
 src/vulkan/vk_image.h src/vulkan/vk_image.cpp 
+src/vulkan/vk_pipeline.h src/vulkan/vk_pipeline.cpp 
 src/vulkan_config/vulkan_config.hpp 
 src/vendor/stb/stb.cpp src/vendor/stb/stb_image.h src/vendor/stb/stb_truetype.h 
 src/vendor/tinyobjloader/tiny_obj_loader.h src/vendor/tinyobjloader/tiny_obj_loader.cpp)
