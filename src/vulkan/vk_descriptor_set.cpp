@@ -5,6 +5,7 @@ std::vector<vk_descriptor_set> vk_descriptor_set::s_instancies = {};
 
 vk_descriptor_set::vk_descriptor_set(vk_device *device) : m_device(device) {}
 
+                           
 vk_descriptor_set *vk_descriptor_set::create(vk_device *device) {
   s_instancies.push_back(vk_descriptor_set(device));
   return &s_instancies[s_instancies.size() - 1];
@@ -57,12 +58,12 @@ void vk_descriptor_set::allocate_descriptor_set() {
 void vk_descriptor_set::create_binding_uniform_buffer(
     uint32_t binding, const VkShaderStageFlagBits stages,
     const uint32_t buffer_count) {
-  ASSERT(!m_locked,
+  ASSERT(m_locked,
          "Tried to add binding to locked descriptor. Add the bindings first "
          "and after call initialize_layout().",
          TEXT_COLOR_ERROR);
 
-  ASSERT(!m_bindings.contains(binding),
+  ASSERT(m_bindings.contains(binding),
          "Error, this binding is already in use, binding: " +
              std::to_string(binding),
          TEXT_COLOR_ERROR);
@@ -77,12 +78,12 @@ void vk_descriptor_set::create_binding_uniform_buffer(
 void vk_descriptor_set::create_binding_storage_buffer(
     uint32_t binding, const VkShaderStageFlagBits stages,
     const uint32_t buffer_count) {
-  ASSERT(!m_locked,
+  ASSERT(m_locked,
          "Tried to add binding to locked descriptor. Add the bindings first "
          "and after call initialize_layout().",
          TEXT_COLOR_ERROR);
 
-  ASSERT(!m_bindings.contains(binding),
+  ASSERT(m_bindings.contains(binding),
          "Error, this binding is already in use, binding: " +
              std::to_string(binding),
          TEXT_COLOR_ERROR);
@@ -97,12 +98,12 @@ void vk_descriptor_set::create_binding_storage_buffer(
 void vk_descriptor_set::create_binding_sampled_image(
     uint32_t binding, const VkShaderStageFlagBits stages,
     const uint32_t image_count) {
-  ASSERT(!m_locked,
+  ASSERT(m_locked,
          "Tried to add binding to locked descriptor. Add the bindings first "
          "and after call initialize_layout().",
          TEXT_COLOR_ERROR);
 
-  ASSERT(!m_bindings.contains(binding),
+  ASSERT(m_bindings.contains(binding),
          "Error, this binding is already in use, binding: " +
              std::to_string(binding),
          TEXT_COLOR_ERROR);
@@ -116,13 +117,13 @@ void vk_descriptor_set::create_binding_sampled_image(
 void vk_descriptor_set::update_binding_uniform_buffer(const uint32_t index,
                                                       const vk_buffer *buffers,
                                                       const uint32_t count) {
-  ASSERT(m_bindings.contains(index),
+  ASSERT(!m_bindings.contains(index),
          "A buffer has tried to be binded to index: " + std::to_string(index) +
              ",however, this position is not \n\t being used by the "
              "Descriptor...",
          TEXT_COLOR_ERROR);
 
-  ASSERT(m_bindings[index].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+  ASSERT(m_bindings[index].type != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
          "Error, tried to update non uniform binding with uniform data.",
          TEXT_COLOR_ERROR);
 
@@ -152,13 +153,13 @@ void vk_descriptor_set::update_binding_storage_buffer(const uint32_t binding,
                                                       const vk_buffer *buffers,
                                                       const uint32_t count) {
   ASSERT(
-      m_bindings.contains(binding),
+      !m_bindings.contains(binding),
       "A buffer has tried to be binded to index: " + std::to_string(binding) +
           ",however, this position is not \n\t being used by the "
           "Descriptor...",
       TEXT_COLOR_ERROR);
 
-  ASSERT(m_bindings[binding].type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+  ASSERT(m_bindings[binding].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
          "Error, tried to update non uniform binding with uniform data.",
          TEXT_COLOR_ERROR);
 
@@ -187,7 +188,7 @@ void vk_descriptor_set::update_binding_storage_buffer(const uint32_t binding,
 void vk_descriptor_set::update_binding_sampled_image(const uint32_t binding,
                                                      const vk_image *images,
                                                      const uint32_t count) {
-  ASSERT(m_bindings.contains(binding),
+  ASSERT(!m_bindings.contains(binding),
          "A image has tried to be binded to index: " + std::to_string(binding) +
              ",however, this position is not \n\t being used by the current "
              "descriptor...",

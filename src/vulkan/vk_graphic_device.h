@@ -27,13 +27,13 @@ private:
   struct device_families {
   public:
     uint32_t get(const std::string &name) {
-      ASSERT(data.contains(name),
+      ASSERT(!data.contains(name),
              "Error, family: " + name + " is not in the device",
              TEXT_COLOR_ERROR);
       return data[name];
     };
     void set(const uint32_t &id, const std::string &name) {
-      ASSERT(!data.contains(name),
+      ASSERT(data.contains(name),
              "Error, family: " + name + " is already in the device",
              TEXT_COLOR_ERROR);
       data[name] = id;

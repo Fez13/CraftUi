@@ -1,8 +1,9 @@
 #include "vulkan.h"
-
 namespace cui::vulkan {
 
 static bool vulkan_initialized = false;
+
+bool is_vulkan_initialized(){return vulkan_initialized;}
 
 void initialize_vulkan() {
   if (vulkan_initialized) {
@@ -30,75 +31,4 @@ void initialize_vulkan() {
 
   vulkan_initialized = true;
 }
-
-void testing() {
-  LOG("Testing has started.", TEXT_COLOR_WARNING);
-
-  try {
-    if (!vulkan_initialized)
-      initialize_vulkan();
-
-    {
-      vk_buffer test_buffer_src(
-          vk_device_manager::get().get_device("main"), sizeof(int) * 200,
-          VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_SHARING_MODE_EXCLUSIVE);
-      test_buffer_src.initialize_buffer_memory(
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-      vk_buffer test_buffer_dst(
-          vk_device_manager::get().get_device("main"), sizeof(int) * 200,
-          VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_SHARING_MODE_EXCLUSIVE);
-      test_buffer_dst.initialize_buffer_memory(
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-      int *buffer = test_buffer_src.get_memory_location<int>();
-      buffer[0] = 1;
-      test_buffer_src.unmap_memory();
-
-      test_buffer_dst.copy_from(&test_buffer_src);
-
-      ASSERT(test_buffer_dst.get_memory_location<int>()[0] == 1,
-             "Error copying data form buffer.", TEXT_COLOR_ERROR);
-      test_buffer_dst.free();
-      test_buffer_src.free();
-      LOG("\t Buffer_test completed.", TEXT_COLOR_NOTIFICATION);
-    }
-    {
-      vk_descriptor_set *descriptor_set_test = vk_descriptor_set::create(
-          vk_device_manager::get().get_device("main"));
-          
-
-      vk_buffer descriptor_set_test_buffer(vk_device_manager::get().get_device("main"), sizeof(int) * 200,
-                VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_SHARING_MODE_EXCLUSIVE);
-      descriptor_set_test_buffer.initialize_buffer_memory(
-          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-      descriptor_set_test->create_binding_uniform_buffer(0);
-      
-      descriptor_set_test->initialize_layout();
-      descriptor_set_test->allocate_descriptor_set();
-      
-      descriptor_set_test->update_binding_uniform_buffer(0,&descriptor_set_test_buffer);
-      
-      vk_descriptor_set::free_one(descriptor_set_test);
-      descriptor_set_test_buffer.free();
-      LOG("\t Descriptor_test completed.", TEXT_COLOR_NOTIFICATION);
-
-    }
-    {
-      vk_image image("/home/federico/CLionProjects/CraftUi/resources/images/Screenshot from 2022-11-05 20-40-04.png","main");   
-      image.free();
-      LOG("\t Image_test completed.", TEXT_COLOR_NOTIFICATION);
-    }
-    
-
-  } catch (std::runtime_error error) {
-    LOG("Testing ended with error: " + error.what(),TEXT_COLOR_ERROR);
-  }
-  LOG("Testing is done!.", TEXT_COLOR_WARNING);
-}
-
 } // namespace cui::vulkan

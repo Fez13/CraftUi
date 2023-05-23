@@ -19,7 +19,7 @@ enum : text_color {
 #define LOG(text, color)                                                       \
   macros_functions::log(std::string("") + text, color, __FILE__, __LINE__)
 #define ASSERT(condition, text, color)                                         \
-  if (!condition) {                                                            \
+  if (condition) {                                                            \
     macros_functions::log(std::string("") + text, color, __FILE__, __LINE__);  \
     throw std::runtime_error("Fatal error");                                   \
   }

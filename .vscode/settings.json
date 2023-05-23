@@ -70,6 +70,10 @@
         "valarray": "cpp",
         "variant": "cpp",
         "future": "cpp",
-        "*.ipp": "cpp"
-    }
+        "*.ipp": "cpp",
+        "codecvt": "cpp"
+    },
+    "cSpell.words": [
+        "glfw"
+    ]
 }

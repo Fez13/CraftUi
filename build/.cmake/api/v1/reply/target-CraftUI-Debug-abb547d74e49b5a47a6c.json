@@ -39,13 +39,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 30,
+				"line" : 40,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 31,
+				"line" : 41,
 				"parent" : 0
 			},
 			{
@@ -99,7 +99,14 @@
 				21,
 				23,
 				25,
-				29
+				27,
+				29,
+				31,
+				36,
+				38,
+				40,
+				41,
+				45
 			]
 		}
 	],
@@ -164,7 +171,14 @@
 				21,
 				23,
 				25,
-				29
+				27,
+				29,
+				31,
+				36,
+				38,
+				40,
+				41,
+				45
 			]
 		},
 		{
@@ -185,8 +199,17 @@
 				22,
 				24,
 				26,
-				27,
-				28
+				28,
+				30,
+				32,
+				33,
+				34,
+				35,
+				37,
+				39,
+				42,
+				43,
+				44
 			]
 		}
 	],
@@ -223,6 +246,17 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/renderer/renderer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/renderer/window.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/renderer/window.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -326,8 +360,84 @@
 		},
 		{
 			"backtrace" : 1,
+			"path" : "src/vulkan/vk_swap_chain.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/vulkan/vk_swap_chain.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/vulkan/vk_shader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/vulkan/vk_shader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/shader_compiler/compile_Spir_V.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/shader_compiler/compile_Spir_V.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
 			"path" : "src/vulkan_config/vulkan_config.hpp",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/examples/vulkan/vulkan_examples.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/examples/glfw/glfw_examples.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/glfw/glfw.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/glfw/glfw.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/glfw/glfw_utils.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/glfw/glfw_utils.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/glfw/glfw_window.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/glfw/glfw_window.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,

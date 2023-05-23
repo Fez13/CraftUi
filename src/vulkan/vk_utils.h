@@ -11,7 +11,7 @@
 #include "../core/macros.h"
 #include "../vendor/glm/glm.hpp"
 
-#include<vulkan/vulkan.h>
+#include <vulkan/vulkan.h>
 namespace cui::vulkan {
 struct deletion_queue {
 
@@ -73,6 +73,7 @@ struct vkc_device_create_data {
 //
 // Queues and devices
 //
+
 bool device_suitable(VkPhysicalDevice const &physical_device,
                      std::function<bool(VkPhysicalDeviceProperties &,
                                         VkPhysicalDeviceFeatures &)>
@@ -121,8 +122,6 @@ struct descriptor_binding {
 // Images
 //
 
-
-
 VkImageCreateInfo vkcImageCreateInfo(const glm::ivec2 size,
                                      const VkFormat format,
                                      const VkImageTiling tiling,
@@ -133,10 +132,29 @@ VkImageMemoryBarrier vkcImageMemoryBarrier(const VkImageLayout old_layout,
                                            const VkImageLayout new_layout,
                                            VkImage image);
 
-VkImageViewCreateInfo
-vkcImageViewCreateInfo(const VkImageViewType view_type, VkImage image,
-                       const VkFormat format, const VkImageAspectFlags flags,
-                       const uint32_t baseMinp = 0,const uint32_t base_array = 0,
-                       const uint32_t level_count = 1,const uint32_t layer_count = 1);
+VkImageViewCreateInfo vkcImageViewCreateInfo(
+    const VkImageViewType view_type, VkImage image, const VkFormat format,
+    const VkImageAspectFlags flags, const uint32_t baseMinp = 0,
+    const uint32_t base_array = 0, const uint32_t level_count = 1,
+    const uint32_t layer_count = 1);
+
+//
+// Swap chain
+//
+
+VkSwapchainCreateInfoKHR vkcSwapchainCreateInfoKHR(
+    const VkSurfaceKHR &surface, const uint32_t min_image_count,
+    const VkFormat &image_format, const VkColorSpaceKHR &color_space,
+    const VkExtent2D &extent,
+    const VkSurfaceTransformFlagBitsKHR transform_flags,
+    const VkPresentModeKHR present_mode);
+
+//
+// Pipeline
+//
+
+VkComputePipelineCreateInfo vkcComputePipelineCreateInfo(
+    const VkPipelineLayout layout,
+    const VkPipelineShaderStageCreateInfo shader_stage);
 
 } // namespace cui::vulkan

@@ -61,7 +61,7 @@ VkCommandBuffer
 vk_device::create_command_buffers(const VkCommandBufferLevel bufferLevel,
                                   const uint32_t bufferCount,
                                   const VkCommandPool pool) const {
-  ASSERT(bufferCount != 0,
+  ASSERT(bufferCount == 0,
          "The count of commands buffer created can't be cero.",
          TEXT_COLOR_ERROR);
 
@@ -90,8 +90,9 @@ VkCommandBuffer vk_device::create_one_time_use_command_buffer(
 
 void vk_device::submit_command_buffer(VkCommandBuffer *cmd,
                                       const uint32_t count,
-                                      const std::string &pool_name) {
-
+                                      const std::string &pool_name,
+                                      const uint32_t semaphores_count,
+                                      const VkSemaphore *semaphores) {
   for (uint32_t i = 0; i < count; i++)
     vkEndCommandBuffer(cmd[i]);
 
@@ -99,6 +100,8 @@ void vk_device::submit_command_buffer(VkCommandBuffer *cmd,
   submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
   submitInfo.commandBufferCount = count;
   submitInfo.pCommandBuffers = cmd;
+  submitInfo.waitSemaphoreCount = semaphores_count;
+  submitInfo.pSignalSemaphores = (semaphores == nullptr) ? nullptr : semaphores;
   vkQueueSubmit(m_queues[pool_name].queue, 1, &submitInfo, VK_NULL_HANDLE);
 }
 

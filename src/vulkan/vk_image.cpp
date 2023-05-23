@@ -2,7 +2,8 @@
 
 namespace cui::vulkan {
 
-void transition_image_layout(vk_device *device, VkImage& image,const VkFormat format,
+void transition_image_layout(vk_device *device, VkImage &image,
+                             const VkFormat format,
                              const VkImageLayout old_layout,
                              const VkImageLayout new_layout) {
   VkCommandBuffer cmd = device->create_one_time_use_command_buffer(
@@ -38,8 +39,8 @@ void transition_image_layout(vk_device *device, VkImage& image,const VkFormat fo
 }
 
 void create_image_view(const VkImageViewType view_type, const VkFormat format,
-                       vk_device *device, VkImageView& image_view, VkImage& image,
-                       const VkImageAspectFlags aspect_flags,
+                       vk_device *device, VkImageView &image_view,
+                       VkImage &image, const VkImageAspectFlags aspect_flags,
                        const uint32_t baseMinp, const uint32_t base_array,
                        const uint32_t level_count, const uint32_t layer_count) {
   VkImageViewCreateInfo image_create_info =
@@ -51,7 +52,8 @@ void create_image_view(const VkImageViewType view_type, const VkFormat format,
 }
 
 vk_image::vk_image(const void *data, int x, int y,
-                   const std::string &device_name, VkImageTiling tiling)
+                   const std::string &device_name, const VkImageTiling tiling,
+                   const VkFormat format)
     : m_tiling(tiling) {
   m_device = vk_device_manager::get().get_device(device_name);
 
@@ -59,18 +61,18 @@ vk_image::vk_image(const void *data, int x, int y,
 }
 
 vk_image::vk_image(const std::string path, const std::string device_name,
-                   const VkImageTiling tiling)
+                   const VkImageTiling tiling, const VkFormat format)
     : m_tiling(tiling) {
   m_device = vk_device_manager::get().get_device(device_name);
   stbi_uc *image_data = stbi_load(path.c_str(), &m_size_x, &m_size_y,
                                   &m_texture_channels_count, STBI_rgb_alpha);
 
-  ASSERT(image_data, "Error reading image path. path: " + path,
+  ASSERT(!image_data, "Error reading image path. path: " + path,
          TEXT_COLOR_ERROR);
 
-  vk_buffer image_data_gpu(m_device, m_size_x * m_size_y * m_texture_channels_count,
-                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                           VK_SHARING_MODE_EXCLUSIVE);
+  vk_buffer image_data_gpu(
+      m_device, m_size_x * m_size_y * m_texture_channels_count,
+      VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_SHARING_MODE_EXCLUSIVE);
   image_data_gpu.initialize_buffer_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                                           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
   void *image_data_gpu_p = image_data_gpu.get_memory_location<void *>();
@@ -123,12 +125,13 @@ void vk_image::create_image() {
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;
-  allocInfo.memoryTypeIndex = find_memory(
-      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, deviceMemoryProperties, memRequirements.memoryTypeBits);
+  allocInfo.memoryTypeIndex =
+      find_memory(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, deviceMemoryProperties,
+                  memRequirements.memoryTypeBits);
 
-  VK_CHECK(vkAllocateMemory(m_device->get_device(), &allocInfo, nullptr,
-                            &m_memory),
-           "Fail creating an image memory...");
+  VK_CHECK(
+      vkAllocateMemory(m_device->get_device(), &allocInfo, nullptr, &m_memory),
+      "Fail creating an image memory...");
 
   vkBindImageMemory(m_device->get_device(), m_image, m_memory, 0);
 }

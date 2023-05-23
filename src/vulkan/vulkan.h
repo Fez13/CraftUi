@@ -6,13 +6,16 @@
 #include "vk_utils.h"
 #include "vk_buffer.h"
 #include "vk_descriptor_set.h"
+#include "vk_pipeline.h"
+#include "../shader_compiler/compile_Spir_V.h"
 
 namespace cui::vulkan {
 
-// This will handel: instance creation, device creation, function
-// initialization.
+/*
+  @brief Will initialize vulkan, device and will create a basic device named main.
+*/
 void initialize_vulkan();
 
-void testing();
+bool is_vulkan_initialized();
 
 } // namespace cui::vulkan

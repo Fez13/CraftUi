@@ -16,6 +16,11 @@
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/window.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/window.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/window.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp"
 },
@@ -58,6 +63,36 @@
   "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_pipeline.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_pipeline.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_pipeline.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_swap_chain.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_swap_chain.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_swap_chain.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_shader.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_shader.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_shader.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/shader_compiler/compile_Spir_V.cpp.o -c /home/federico/CLionProjects/CraftUi/src/shader_compiler/compile_Spir_V.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/shader_compiler/compile_Spir_V.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/glfw/glfw.cpp.o -c /home/federico/CLionProjects/CraftUi/src/glfw/glfw.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/glfw/glfw.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/glfw/glfw_utils.cpp.o -c /home/federico/CLionProjects/CraftUi/src/glfw/glfw_utils.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/glfw/glfw_utils.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/glfw/glfw_window.cpp.o -c /home/federico/CLionProjects/CraftUi/src/glfw/glfw_window.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/glfw/glfw_window.cpp"
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",

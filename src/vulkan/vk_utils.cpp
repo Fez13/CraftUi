@@ -138,7 +138,7 @@ uint32_t getSuitableQueueFamily(
   for (uint32_t i = 0; i < queueFamilies.size(); i++)
     if (checks(queueFamilies[i]))
       return i;
-  ASSERT(false, "There isn't any queue whit the requested capabilities.",
+  ASSERT(true, "There isn't any queue whit the requested capabilities.",
          TEXT_COLOR_ERROR);
   return UINT32_MAX;
 }
@@ -264,11 +264,11 @@ VkImageMemoryBarrier vkcImageMemoryBarrier(const VkImageLayout old_layout,
   return barrier;
 }
 
-VkImageViewCreateInfo vkcImageViewCreateInfo(
-    const VkImageViewType view_type, VkImage image, const VkFormat format,
-    const VkImageAspectFlags flags, const uint32_t baseMinp,
-    const uint32_t base_array, const uint32_t level_count,
-    const uint32_t layer_count) {
+VkImageViewCreateInfo
+vkcImageViewCreateInfo(const VkImageViewType view_type, VkImage image,
+                       const VkFormat format, const VkImageAspectFlags flags,
+                       const uint32_t baseMinp, const uint32_t base_array,
+                       const uint32_t level_count, const uint32_t layer_count) {
 
   VkImageViewCreateInfo info{};
   info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -287,6 +287,50 @@ VkImageViewCreateInfo vkcImageViewCreateInfo(
   info.subresourceRange.layerCount = layer_count;
   info.pNext = nullptr;
   return info;
+}
+
+//
+// Swap chains
+//
+
+VkSwapchainCreateInfoKHR vkcSwapchainCreateInfoKHR(
+    const VkSurfaceKHR &surface, const uint32_t min_image_count,
+    const VkFormat &image_format, const VkColorSpaceKHR &color_space,
+    const VkExtent2D &extent,
+    const VkSurfaceTransformFlagBitsKHR transform_flags,
+    const VkPresentModeKHR present_mode) {
+
+  VkSwapchainCreateInfoKHR swap_chain_info = {};
+  swap_chain_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+  swap_chain_info.surface = surface;
+  swap_chain_info.minImageCount = min_image_count;
+  swap_chain_info.imageFormat = image_format;
+  swap_chain_info.imageColorSpace = color_space;
+  swap_chain_info.imageExtent = extent;
+  swap_chain_info.imageArrayLayers = 1;
+  swap_chain_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  swap_chain_info.preTransform = transform_flags;
+  swap_chain_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+  swap_chain_info.presentMode = present_mode;
+  swap_chain_info.clipped = VK_TRUE;
+  swap_chain_info.oldSwapchain = VK_NULL_HANDLE;
+  swap_chain_info.pNext = nullptr;
+  return swap_chain_info;
+}
+
+//
+// Pipelines
+//
+
+VkComputePipelineCreateInfo vkcComputePipelineCreateInfo(
+    const VkPipelineLayout layout,
+    const VkPipelineShaderStageCreateInfo shader_stage) {
+  VkComputePipelineCreateInfo pipeline_info{};
+  pipeline_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+  pipeline_info.layout = layout;
+  pipeline_info.stage = shader_stage;
+  pipeline_info.pNext = nullptr;
+  return pipeline_info;
 }
 
 } // namespace cui::vulkan

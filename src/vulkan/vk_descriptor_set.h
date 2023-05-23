@@ -8,6 +8,15 @@
 namespace cui::vulkan {
 
 struct vk_descriptor_set_array;
+
+/*
+  @brief It's the connection between cpu and gpu in terms of buffers.
+  @param update All functions started with update will bind some type of buffer
+  with a shader, they must be called after initialization.
+  @param create All functions started with create will create a bind of some
+  type of buffer with a shader, they must be called before initialization.
+
+*/
 class vk_descriptor_set {
 public:
   vk_descriptor_set(vk_device *device);
@@ -18,13 +27,16 @@ public:
 
   void initialize_layout();
 
+  VkDescriptorSetLayout get_layout() { return m_descriptor_set_layout; }
+
+  /*
+    @brief Shall be called after initialization to allow the descriptor to be
+    used.
+    @warning Multiple calls or being call before initialization will create
+    unexpected behaviour.
+  */
   void allocate_descriptor_set();
 
-  //
-  // Bindings
-  //
-
-  // Create
   void create_binding_uniform_buffer(
       uint32_t binding,
       const VkShaderStageFlagBits stages = VK_SHADER_STAGE_VERTEX_BIT,
@@ -40,7 +52,6 @@ public:
       const VkShaderStageFlagBits stages = VK_SHADER_STAGE_VERTEX_BIT,
       const uint32_t image_count = 1);
 
-  // Update
   void update_binding_uniform_buffer(const uint32_t index,
                                      const vk_buffer *buffers,
                                      const uint32_t count = 1);
@@ -71,9 +82,12 @@ private:
 
 struct vk_descriptor_set_array {
 public:
-  vk_descriptor_set_array(vk_device &device) : m_device(&device) {}
+  vk_descriptor_set_array(vk_device *device) : m_device(device) {}
 
-  // Will be executed every frame, should be efficient.
+  /*
+    @brief Will bind all descriptor sets of the array to the pipeline.
+    @warning Not initialized descriptors, arrays or pipelines will create unexpected behavior and warnings.
+  */
   void bind_all(const VkPipelineLayout &layout, VkCommandBuffer &cmd) {
     VkDescriptorSet *descriptor_sets;
     descriptor_sets =
@@ -104,8 +118,39 @@ public:
     }
   }
 
+  std::vector<VkDescriptorSetLayout> get_layouts() const {
+    std::vector<VkDescriptorSetLayout> array;
+    array.resize(m_data.size());
+    for (uint32_t i = 0; i < m_data.size(); i++) {
+      array[i] = m_data[i]->get_layout();
+    }
+    return array;
+  }
+
+  uint32_t count() const { return m_data.size(); }
+  bool is_lock() { return lock; }
+  void lock_array() {
+    m_descriptors.resize(m_data.size());
+    for (uint32_t i = 0; i < m_data.size(); i++) {
+      m_descriptors[i] = m_data[i]->get_descriptor_set();
+    }
+    lock = true;
+  }
+
+  std::vector<VkDescriptorSet> &get_descriptor_array() { return m_descriptors; }
+
+  void free() {
+    for (uint32_t i = 0; i < m_data.size(); i++) {
+      m_data[i]->free();
+    }
+    m_descriptors.clear();
+    m_data.clear();
+  }
+
 private:
+  bool lock = false;
   vk_device *m_device;
+  std::vector<VkDescriptorSet> m_descriptors;
   std::vector<vk_descriptor_set *> m_data;
 };
 

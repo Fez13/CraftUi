@@ -19,10 +19,10 @@ public:
   vk_image() = default;
 
   vk_image(const void *data, int x, int y, const std::string &device_name,
-           VkImageTiling tiling = VK_IMAGE_TILING_LINEAR);
+           const VkImageTiling tiling = VK_IMAGE_TILING_LINEAR, const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB);
 
   vk_image(const std::string path, const std::string device_name,
-           const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL);
+           const VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL,const VkFormat format = VK_FORMAT_R8G8B8A8_SRGB);
 
   VkImage get_image() const { return m_image; };
   VkImageView get_image_view() const { return m_image_view; };
@@ -34,6 +34,7 @@ private:
   int m_texture_channels_count;
   int m_size_x;
   int m_size_y;
+  VkFormat m_format;
   VkImageTiling m_tiling;
   VkImage m_image;
   VkDeviceMemory m_memory;

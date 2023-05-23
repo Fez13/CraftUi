@@ -12,7 +12,7 @@ void vk_graphic_device::initialize(
   uint32_t device_count = 0;
   vkEnumeratePhysicalDevices(vk_instance::get().get_instance(), &device_count,
                              nullptr);
-  ASSERT(device_count != 0,
+  ASSERT(device_count == 0,
          "Error, no vulkan compatible graphics card was found.",
          TEXT_COLOR_ERROR);
 
@@ -31,7 +31,7 @@ void vk_graphic_device::initialize(
     }
   }
 
-  ASSERT(pick,
+  ASSERT(!pick,
          "There is a vulkan capable device, but it doesn't contain the "
          "necessary proprieties.",
          TEXT_COLOR_ERROR);

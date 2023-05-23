@@ -1,0 +1,17 @@
+#version 450
+
+
+
+layout(set = 0,binding = 0) buffer test_array{
+  int m_data[10];
+
+} array;
+
+
+void main(){
+  uint globalID = gl_WorkGroupID.x * gl_WorkGroupSize.x + gl_LocalInvocationID.x;
+  array.m_data[globalID] *= array.m_data[globalID];
+  return;
+}
+
+
