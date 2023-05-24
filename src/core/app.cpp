@@ -19,7 +19,6 @@ void App::initialize() {
   glfw::initialize_glfw();
   glfw::example::test_glfw();
 
-
   LOG("App initialization finished at : " + std::to_string(GET_ELAPSED()),
       TEXT_COLOR_NOTIFICATION);
 }

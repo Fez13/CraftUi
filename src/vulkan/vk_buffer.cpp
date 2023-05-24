@@ -15,10 +15,11 @@ vk_buffer::vk_buffer(vk_device *device, const uint32_t size,
 
 void vk_buffer::initialize_buffer_memory(
     const VkMemoryPropertyFlags memory_properties) {
-
+  ASSERT(m_device == nullptr,
+         "Error, device not valid or buffer constructor hasn't been called.",TEXT_COLOR_ERROR);
   // Gets appropiate memory
   m_memory_properties = memory_properties;
-  
+
   VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
   vkGetPhysicalDeviceMemoryProperties(vk_graphic_device::get().get_device(),
                                       &deviceMemoryProperties);
@@ -30,7 +31,7 @@ void vk_buffer::initialize_buffer_memory(
   // Allocates memory
   VkMemoryAllocateInfo memory_allocate_info =
       vkcMemoryAllocateInfo(m_memory_index, m_memory_requirements.size);
-      
+
   VK_CHECK(vkAllocateMemory(m_device->get_device(), &memory_allocate_info,
                             nullptr, &m_memory),
            "Error allocating gpu buffer");
@@ -38,7 +39,9 @@ void vk_buffer::initialize_buffer_memory(
 }
 
 void vk_buffer::unmap_memory() {
+  ASSERT(m_mapped_memory == nullptr, "Error, tried to unmap already unmapped memory.",TEXT_COLOR_ERROR);
   vkUnmapMemory(m_device->get_device(), m_memory);
+  m_mapped_memory = nullptr;
 }
 
 VkDeviceAddress vk_buffer::get_address() const {
@@ -51,7 +54,7 @@ VkDeviceAddress vk_buffer::get_address() const {
   // &bufferDeviceAI);
 }
 
-void vk_buffer::copy_from(vk_buffer *buffer) {
+void vk_buffer::copy_from(const vk_buffer *buffer) {
 
   if (!(buffer->get_usage() & VK_BUFFER_USAGE_TRANSFER_SRC_BIT)) {
     LOG("Wen writing in a gpu buffer the source must have the "
@@ -81,6 +84,8 @@ void vk_buffer::copy_from(vk_buffer *buffer) {
 }
 
 void vk_buffer::free() {
+  if(m_mapped_memory != nullptr)
+    unmap_memory();
   vkDestroyBuffer(m_device->get_device(), m_buffer, nullptr);
   vkFreeMemory(m_device->get_device(), m_memory, nullptr);
 }
