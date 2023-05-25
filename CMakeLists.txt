@@ -14,6 +14,7 @@ src/core/app.h src/core/app.cpp
 src/entities/entity.h 
 src/renderer/renderer.h src/renderer/renderer.cpp 
 src/renderer/window.h src/renderer/window.cpp 
+src/renderer/pipelines/pipeline_label.h  
 src/vulkan/vk_buffer.h src/vulkan/vk_buffer.cpp 
 src/vulkan/vk_graphic_device.h src/vulkan/vk_graphic_device.cpp 
 src/vulkan/vk_instance.h src/vulkan/vk_instance.cpp 

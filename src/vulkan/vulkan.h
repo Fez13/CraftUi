@@ -7,6 +7,7 @@
 #include "vk_buffer.h"
 #include "vk_descriptor_set.h"
 #include "vk_pipeline.h"
+#include "vk_swap_chain.h"
 #include "../shader_compiler/compile_Spir_V.h"
 
 namespace cui::vulkan {

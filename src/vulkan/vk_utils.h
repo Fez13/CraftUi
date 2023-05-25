@@ -27,6 +27,7 @@ private:
 //
 // Initializers
 //
+
 VkApplicationInfo
 vkcApplicationInfo(const char *app_name, const uint32_t app_version,
                    const uint32_t api_version,
@@ -157,4 +158,12 @@ VkComputePipelineCreateInfo vkcComputePipelineCreateInfo(
     const VkPipelineLayout layout,
     const VkPipelineShaderStageCreateInfo shader_stage);
 
+VkAttachmentDescription vkcAttachmentDescription(
+    const VkFormat format, const VkAttachmentLoadOp load_operator,
+    const VkAttachmentStoreOp store_operator, const VkImageLayout final_layout);
+
+VkRenderPassCreateInfo
+vkRenderPassCreateInfo(const std::vector<VkAttachmentDescription> &attachments,
+                       const std::vector<VkSubpassDescription> &sub_pass,
+                       const std::vector<VkSubpassDependency> &sub_pass_dependency);
 } // namespace cui::vulkan

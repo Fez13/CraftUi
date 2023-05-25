@@ -49,6 +49,34 @@ vk_device::vk_device(const vkc_device_create_data &data) {
   }
 }
 
+void vk_device::add_queue(const queue_info info) {
+  if (info.second == UINT32_MAX)
+    return;
+  m_queues[info.first] = queue{VK_NULL_HANDLE, info.second, VK_NULL_HANDLE};
+
+  std::vector<uint32_t> used_queues = get_queues_indices();
+
+  VkDeviceQueueCreateInfo queue_create_info;
+
+  if (std::find(used_queues.begin(), used_queues.end(), info.second) ==
+      used_queues.end()) {
+    queue_create_info =
+        vkcDeviceQueueCreateInfo(0, 1, &m_queue_priorities[0], info.second);
+  }
+
+  queue *queue = &m_queues[info.first];
+
+  // Locate queue
+  vkGetDeviceQueue(m_device, queue->queue_index, 0, &queue->queue);
+
+  // Create pool
+  VkCommandPoolCreateInfo pool_create_info =
+      vkcCommandPoolCreateInfo(queue->queue_index);
+  VK_CHECK(vkCreateCommandPool(m_device, &pool_create_info, nullptr,
+                               &queue->command_pool) != VK_SUCCESS,
+           "Error in vulkan function vkCreateCommandPool.");
+}
+
 void vk_device::create_fence(VkFenceCreateFlags flags) {
   VkFenceCreateInfo fenceInfo{};
   fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;

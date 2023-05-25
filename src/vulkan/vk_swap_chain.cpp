@@ -4,8 +4,6 @@ namespace cui::vulkan {
 void vk_swap_chain::initialize(vk_device *device, const uint32_t image_count) {
   m_device = device;
   m_images_count = image_count;
-  m_queue_families = vk_device_manager::get().get_all_used_families();
-
   create_swap_chain();
 }
 
@@ -19,6 +17,8 @@ void vk_swap_chain::create_swap_chain() {
 
   create_proprieties();
   find_queue_family();
+  m_device->add_queue({"GRAPHIC", get_queue_family()});
+  m_queue_families = vk_device_manager::get().get_all_used_families();
   static bool done = false;
   bool presents_feature[2] = {false, false};
 
@@ -65,7 +65,6 @@ void vk_swap_chain::create_swap_chain() {
         std::clamp(extent2D.height,
                    m_proprieties.surface_capabilities.minImageExtent.height,
                    m_proprieties.surface_capabilities.maxImageExtent.height);
-    update_images();
     LOG("Not optimal extent has been chose", TEXT_COLOR_WARNING);
   }
 
@@ -103,6 +102,8 @@ void vk_swap_chain::create_swap_chain() {
   VK_CHECK(vkCreateSwapchainKHR(m_device->get_device(), &swap_chain_create_info,
                                 nullptr, &m_swap_chain),
            "Fail creating the swapChain");
+  update_images();
+           
 }
 
 uint32_t vk_swap_chain::find_queue_family() {
@@ -190,7 +191,6 @@ void vk_swap_chain::update_images() {
         TEXT_COLOR_WARNING);
 
   // Update views
-  m_image_views.resize(m_images.size());
 
   VkImageViewCreateInfo info{};
   info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -209,13 +209,14 @@ void vk_swap_chain::update_images() {
   info.subresourceRange.layerCount = 1;
 
   clear_image_views();
+  m_image_views.resize(m_images.size());
   for (uint32_t i = 0; i < m_image_views.size(); i++)
     create_image_view(VK_IMAGE_VIEW_TYPE_2D, m_surface_formate.format, m_device,
                       m_image_views[i], m_images[i], VK_IMAGE_ASPECT_COLOR_BIT,
                       0, 0, 1, 1);
 }
 
-void vk_swap_chain::create_depth_frame_buffer(vk_image *depth_image,
+void vk_swap_chain::create_depth_frame_buffer(const VkImageView &depth_image_view,
                                               VkRenderPass &render_pass) {
   clear_frame_buffer();
   m_depth_frame_buffers.resize(m_images_count);
@@ -230,8 +231,9 @@ void vk_swap_chain::create_depth_frame_buffer(vk_image *depth_image,
   framebufferInfo.pNext = nullptr;
 
   for (uint32_t i = 0; i < m_depth_frame_buffers.size(); i++) {
-    VkImageView attachments[2] = {m_image_views[i],
-                                  depth_image->get_image_view()};
+    VkImageView attachments[2];
+    attachments[0] = m_image_views[i];
+    attachments[1] = depth_image_view;
     framebufferInfo.pAttachments = attachments;
 
     VK_CHECK(vkCreateFramebuffer(m_device->get_device(), &framebufferInfo,
@@ -265,10 +267,11 @@ void vk_swap_chain::clear_images() {
 }
 
 void vk_swap_chain::free() {
-  clear_image_views();
-  clear_images();
+  vkDeviceWaitIdle(m_device->get_device());
   clear_frame_buffer();
+  clear_image_views();
   vkDestroySwapchainKHR(m_device->get_device(), m_swap_chain, nullptr);
+  vkDestroySurfaceKHR(vk_instance::get().get_instance(), m_surface, nullptr);
 }
 
 } // namespace cui::vulkan

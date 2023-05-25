@@ -54,7 +54,7 @@ void create_image_view(const VkImageViewType view_type, const VkFormat format,
 vk_image::vk_image(const void *data, int x, int y,
                    const std::string &device_name, const VkImageTiling tiling,
                    const VkFormat format)
-    : m_tiling(tiling) {
+    : m_tiling(tiling), m_format(format) {
   m_device = vk_device_manager::get().get_device(device_name);
 
   // TODO
@@ -62,7 +62,7 @@ vk_image::vk_image(const void *data, int x, int y,
 
 vk_image::vk_image(const std::string path, const std::string device_name,
                    const VkImageTiling tiling, const VkFormat format)
-    : m_tiling(tiling) {
+    : m_tiling(tiling), m_format(format) {
   m_device = vk_device_manager::get().get_device(device_name);
   stbi_uc *image_data = stbi_load(path.c_str(), &m_size_x, &m_size_y,
                                   &m_texture_channels_count, STBI_rgb_alpha);
@@ -88,28 +88,38 @@ void vk_image::fill_image(vk_buffer &buffer) {
 
   create_image();
 
-  transition_image_layout(m_device, m_image, VK_FORMAT_R8G8B8A8_SRGB,
+  transition_image_layout(m_device, m_image, m_format,
                           VK_IMAGE_LAYOUT_UNDEFINED,
                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
   buffer.copy_to_image(m_image, {m_size_x, m_size_y, 1});
 
-  transition_image_layout(m_device, m_image, VK_FORMAT_R8G8B8A8_SRGB,
+  transition_image_layout(m_device, m_image, m_format,
                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                           VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-  create_image_view(VK_IMAGE_VIEW_TYPE_2D, VK_FORMAT_R8G8B8A8_SRGB, m_device,
-                    m_image_view, m_image, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1,
-                    1);
+  create_image_view(VK_IMAGE_VIEW_TYPE_2D, m_format, m_device, m_image_view,
+                    m_image, VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1, 1);
+}
+
+vk_image::vk_image(const std::string device_name, const VkImageTiling tiling,
+                   const VkFormat format, const VkImageUsageFlagBits usage,
+                   const VkImageAspectFlagBits aspect, const int x, const int y)
+    : m_tiling(tiling), m_format(format), m_usage(usage), m_size_x(x),
+      m_size_y(y) {
+  m_device = vk_device_manager::get().get_device(device_name);
+  create_image();
+
+  create_image_view(VK_IMAGE_VIEW_TYPE_2D, m_format, m_device, m_image_view,
+                    m_image, VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1, 1);
 }
 
 void vk_image::create_image() {
   VkPhysicalDevice gpu = vk_graphic_device::get().get_device();
 
-  VkImageCreateInfo image_info = vkcImageCreateInfo(
-      {m_size_x, m_size_y}, VK_FORMAT_R8G8B8A8_SRGB, m_tiling,
-      VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-      VK_IMAGE_LAYOUT_UNDEFINED);
+  VkImageCreateInfo image_info =
+      vkcImageCreateInfo({m_size_x, m_size_y}, m_format, m_tiling, m_usage,
+                         VK_IMAGE_LAYOUT_UNDEFINED);
 
   VK_CHECK(
       vkCreateImage(m_device->get_device(), &image_info, nullptr, &m_image),

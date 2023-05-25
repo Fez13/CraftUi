@@ -94,6 +94,9 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
 }
 
 #ifdef DESKTOP
+
+#define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
+
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
                                                VkPhysicalDeviceFeatures &ft) {
   if (ft.multiDrawIndirect != VK_TRUE)
@@ -131,6 +134,9 @@ inline std::vector<const char *> device_khr_extensions() {
 }
 
 #else
+
+#define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
+
 
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
                                                VkPhysicalDeviceFeatures &ft) {

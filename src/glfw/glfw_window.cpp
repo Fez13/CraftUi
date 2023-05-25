@@ -14,7 +14,7 @@ void glfw_window::set_window_size(const uint32_t width, const uint32_t height,
 
 void glfw_window::create_depth_image(vulkan::vk_image *image,
                                      VkRenderPass &render_pass) {
-  m_swap_chain.create_depth_frame_buffer(image, render_pass);
+  m_swap_chain.create_depth_frame_buffer(image->get_image_view(), render_pass);
 }
 
 void glfw_window::set_window_refresh_rate(const float refresh) {
@@ -44,7 +44,6 @@ void glfw_window::initialize(const uint32_t width, const uint32_t height, const 
     device_khr_create_data.queues = {
         {"COMPUTE",
          vulkan::vk_graphic_device::get().get_device_family("COMPUTE")},
-        {"GRAPHIC", get_queue_family()},
         {"TRANSFER",
          vulkan::vk_graphic_device::get().get_device_family("TRANSFER")}};
     vulkan::vk_device_manager::get().create(device_khr_create_data);

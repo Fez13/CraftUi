@@ -333,4 +333,37 @@ VkComputePipelineCreateInfo vkcComputePipelineCreateInfo(
   return pipeline_info;
 }
 
+VkAttachmentDescription
+vkcAttachmentDescription(const VkFormat format,
+                         const VkAttachmentLoadOp load_operator,
+                         const VkAttachmentStoreOp store_operator,
+                         const VkImageLayout final_layout) {
+  VkAttachmentDescription descriptor;
+  descriptor.format = format;
+  descriptor.samples = VK_SAMPLE_COUNT_1_BIT;
+  descriptor.loadOp = load_operator;
+  descriptor.storeOp = store_operator;
+  descriptor.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+  descriptor.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+  descriptor.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  descriptor.finalLayout = final_layout;
+  return descriptor;
+}
+
+VkRenderPassCreateInfo
+vkRenderPassCreateInfo(const std::vector<VkAttachmentDescription> &attachments,
+                       const std::vector<VkSubpassDescription> &sub_pass,
+                       const std::vector<VkSubpassDependency> &sub_pass_dependency) {
+  VkRenderPassCreateInfo renderPassCreateInfo{};
+  renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+  renderPassCreateInfo.attachmentCount = attachments.size();
+  renderPassCreateInfo.pAttachments = attachments.data();
+  renderPassCreateInfo.subpassCount = sub_pass.size();
+  renderPassCreateInfo.pSubpasses = sub_pass.data();
+  renderPassCreateInfo.dependencyCount = sub_pass_dependency.size();
+  renderPassCreateInfo.pDependencies = sub_pass_dependency.data();
+  renderPassCreateInfo.pNext = nullptr;
+  return renderPassCreateInfo;
+}
+
 } // namespace cui::vulkan

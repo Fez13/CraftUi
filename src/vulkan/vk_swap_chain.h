@@ -31,7 +31,7 @@ public:
     m_height = height;
   }
 
-  void create_depth_frame_buffer(vk_image *depth_image,
+  void create_depth_frame_buffer(const VkImageView &depth_image_view,
                                  VkRenderPass &render_pass);
 
   VkFormat get_format() const { return m_surface_formate.format; }

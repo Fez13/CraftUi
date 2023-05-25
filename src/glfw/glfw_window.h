@@ -10,7 +10,7 @@
 namespace cui::glfw {
 
 // Window and swap chain abstraction for windows, mac and linux
-class glfw_window : protected renderer::window {
+class glfw_window : public renderer::window {
 
 public:
   glfw_window() = default;
@@ -24,10 +24,10 @@ public:
 
   /*
    Will initialize the window, this shall only be called 1 time.
-   @brief This function will check for a device named KHR_DEVICE, if it finds
+   @brief This function will check for a device named DEVICE_KHR, if it finds
    one, it will set it as it's main device, otherwise it will create a device
    by that name with all necessary features.
-   @warning If there is a device named KHR_DEVICE without he necessary
+   @warning If there is a device named DEVICE_KHR without he necessary
    capabilities there will be unexpected behavior.
    @param all Takes the default width,height and refresh_rate of the window.
    */
