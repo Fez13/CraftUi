@@ -1,10 +1,11 @@
 #pragma once
 #include <cstdlib>
-#include <map>
+#include <unordered_map>
+#include <iostream>
 namespace cui::renderer::pipeline_info {
 
-using pipeline_id = uint16_t;
-enum : pipeline_id {
+using pipeline_label = uint16_t;
+enum : pipeline_label {
   CUI_PIPELINE_RASTERIZATION_DEFAULT,
   CUI_PIPELINE_RASTERIZATION_2D_DEFAULT,
   CUI_PIPELINE_RASTERIZATION_TEXT_DEFAULT,
@@ -29,7 +30,7 @@ struct pipeline_data {
   const bool ubiquitous;
 };
 
-const std::map<pipeline_id, pipeline_data> pipelines_data = {
+const std::unordered_map<pipeline_label, pipeline_data> pipelines_data = {
     {CUI_PIPELINE_RASTERIZATION_DEFAULT,
      {CUI_PIPELINE_TYPE_3D, "CUI_PIPELINE_RASTERIZATION_DEFAULT", 128, false,
       false}},

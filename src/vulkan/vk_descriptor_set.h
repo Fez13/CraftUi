@@ -52,15 +52,25 @@ public:
       const VkShaderStageFlagBits stages = VK_SHADER_STAGE_VERTEX_BIT,
       const uint32_t image_count = 1);
 
-  void update_binding_uniform_buffer(const uint32_t index,
+  void create_binding_sampler(
+      uint32_t binding,
+      const VkShaderStageFlagBits stages = VK_SHADER_STAGE_VERTEX_BIT,
+      const uint32_t image_count = 1);
+
+  void update_binding_uniform_buffer(const uint32_t binding,
                                      const vk_buffer *buffers,
                                      const uint32_t count = 1);
-  void update_binding_storage_buffer(const uint32_t index,
+
+  void update_binding_storage_buffer(const uint32_t binding,
                                      const vk_buffer *buffers,
                                      const uint32_t count);
-  void update_binding_sampled_image(const uint32_t index,
+
+  void update_binding_sampled_image(const uint32_t binding,
                                     const vk_image *images,
                                     const uint32_t count);
+
+  void update_binding_sampler(const uint32_t binding, const VkSampler *samplers,
+                              const uint32_t count);
 
   static void free_all(){};
   static void free_one(vk_descriptor_set *object);
@@ -86,7 +96,8 @@ public:
 
   /*
     @brief Will bind all descriptor sets of the array to the pipeline.
-    @warning Not initialized descriptors, arrays or pipelines will create unexpected behavior and warnings.
+    @warning Not initialized descriptors, arrays or pipelines will create
+    unexpected behavior and warnings.
   */
   void bind_all(const VkPipelineLayout &layout, VkCommandBuffer &cmd) {
     VkDescriptorSet *descriptor_sets;

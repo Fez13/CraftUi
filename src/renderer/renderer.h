@@ -2,8 +2,9 @@
 #include "../core/macros.h"
 #include "../vulkan/vulkan.h"
 #include "../vulkan/vk_utils.h"
-#include "window.h"
 #include "pipelines/pipeline_label.h"
+#include "window.h"
+#include "scene.h"
 
 namespace cui::renderer {
 
@@ -39,11 +40,11 @@ private:
 
   void update_view_port();
 
-  std::unordered_map<pipeline_id,
+  std::unordered_map<pipeline_label,
                      std::unique_ptr<vulkan::vk_rasterization_pipeline>>
       m_ubiquitous_pipelines;
 
-  std::unordered_map<pipeline_id,
+  std::unordered_map<pipeline_label,
                      std::unique_ptr<vulkan::vk_rasterization_pipeline>>
       m_occasional_pipelines;
 

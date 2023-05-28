@@ -347,6 +347,7 @@ vkcAttachmentDescription(const VkFormat format,
   descriptor.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
   descriptor.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
   descriptor.finalLayout = final_layout;
+  descriptor.flags = 0;
   return descriptor;
 }
 

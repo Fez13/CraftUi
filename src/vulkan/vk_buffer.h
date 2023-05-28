@@ -11,7 +11,7 @@ class vk_buffer {
 public:
   explicit vk_buffer() = default;
 
-  vk_buffer(vk_device *device, const uint32_t size,
+  vk_buffer(vk_device *device, const size_t size,
             const VkBufferUsageFlags usage, const VkSharingMode sharing_mode);
 
   /*

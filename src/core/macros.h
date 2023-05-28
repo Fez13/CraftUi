@@ -19,17 +19,17 @@ enum : text_color {
 #define LOG(text, color)                                                       \
   macros_functions::log(std::string("") + text, color, __FILE__, __LINE__)
 #define ASSERT(condition, text, color)                                         \
-  if (condition) {                                                            \
+  if (condition) {                                                             \
     macros_functions::log(std::string("") + text, color, __FILE__, __LINE__);  \
     throw std::runtime_error("Fatal error");                                   \
   }
 #define GET_ELAPSED()                                                          \
   macros_functions::getElapsedTime<std::chrono::milliseconds>()
 
-#define VK_CHECK(function,text)                                                 \
+#define VK_CHECK(function, text)                                               \
   if (function != VK_SUCCESS) {                                                \
-    macros_functions::log(std::string(text),           \
-                          TEXT_COLOR_ERROR, __FILE__, __LINE__);               \
+    macros_functions::log(std::string(text), TEXT_COLOR_ERROR, __FILE__,       \
+                          __LINE__);                                           \
     throw std::runtime_error("Vulkan error");                                  \
   }
 

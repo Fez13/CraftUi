@@ -1,7 +1,7 @@
 #include "vk_buffer.h"
 
 namespace cui::vulkan {
-vk_buffer::vk_buffer(vk_device *device, const uint32_t size,
+vk_buffer::vk_buffer(vk_device *device, const size_t size,
                      const VkBufferUsageFlags usage,
                      const VkSharingMode sharing_mode)
     : m_device(device), m_size(size), m_usages(usage) {

@@ -5,7 +5,6 @@ std::vector<vk_descriptor_set> vk_descriptor_set::s_instancies = {};
 
 vk_descriptor_set::vk_descriptor_set(vk_device *device) : m_device(device) {}
 
-                           
 vk_descriptor_set *vk_descriptor_set::create(vk_device *device) {
   s_instancies.push_back(vk_descriptor_set(device));
   return &s_instancies[s_instancies.size() - 1];
@@ -53,7 +52,6 @@ void vk_descriptor_set::allocate_descriptor_set() {
                                     &m_descriptor_set),
            "Error allocating a descriptorSet.");
 }
-
 
 void vk_descriptor_set::create_binding_uniform_buffer(
     uint32_t binding, const VkShaderStageFlagBits stages,
@@ -112,6 +110,26 @@ void vk_descriptor_set::create_binding_sampled_image(
       binding, image_count, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, nullptr, stages);
   m_bindings[binding].count = image_count;
   m_bindings[binding].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+}
+
+void vk_descriptor_set::create_binding_sampler(
+    uint32_t binding,
+    const VkShaderStageFlagBits stages,
+    const uint32_t sampler_count) {
+  ASSERT(m_locked,
+         "Tried to add binding to locked descriptor. Add the bindings first "
+         "and after call initialize_layout().",
+         TEXT_COLOR_ERROR);
+
+  ASSERT(m_bindings.contains(binding),
+         "Error, this binding is already in use, binding: " +
+             std::to_string(binding),
+         TEXT_COLOR_ERROR);
+
+  m_bindings[binding].layout_binding = vkcDescriptorSetLayoutBinding(
+      binding, sampler_count, VK_DESCRIPTOR_TYPE_SAMPLER, nullptr, stages);
+  m_bindings[binding].count = sampler_count;
+  m_bindings[binding].type = VK_DESCRIPTOR_TYPE_SAMPLER;
 }
 
 void vk_descriptor_set::update_binding_uniform_buffer(const uint32_t index,
@@ -211,6 +229,36 @@ void vk_descriptor_set::update_binding_sampled_image(const uint32_t binding,
   write_descriptor_set.descriptorCount = count;
   write_descriptor_set.dstSet = m_descriptor_set;
   write_descriptor_set.pImageInfo = image_info.data();
+  vkUpdateDescriptorSets(m_device->get_device(), 1, &write_descriptor_set, 0,
+                         nullptr);
+}
+
+void vk_descriptor_set::update_binding_sampler(const uint32_t binding,
+                                               const VkSampler *samplers,
+                                               const uint32_t count) {
+  ASSERT(!m_bindings.contains(binding),
+         "A sampler has tried to be binded to index: " + std::to_string(binding) +
+             ",however, this position is not \n\t being used by the current "
+             "descriptor...",
+         TEXT_COLOR_ERROR);
+
+  std::vector<VkDescriptorImageInfo> sampler_info;
+  sampler_info.resize(count);
+
+  for (uint32_t i = 0; i < sampler_info.size(); ++i) {
+    sampler_info[i].imageView = nullptr;
+    sampler_info[i].sampler = samplers[i];
+    sampler_info[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+  }
+  
+  VkWriteDescriptorSet write_descriptor_set{};
+  write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  write_descriptor_set.descriptorType = m_bindings[binding].type;
+  write_descriptor_set.dstBinding = binding;
+  write_descriptor_set.dstArrayElement = 0;
+  write_descriptor_set.descriptorCount = count;
+  write_descriptor_set.dstSet = m_descriptor_set;
+  write_descriptor_set.pImageInfo = sampler_info.data();
   vkUpdateDescriptorSets(m_device->get_device(), 1, &write_descriptor_set, 0,
                          nullptr);
 }

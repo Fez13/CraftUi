@@ -6,6 +6,9 @@
 
 #define TESTING
 #define DESKTOP
+
+//TODO: document
+
 namespace cui::vulkan {
 
 const struct structure_vulkan_initialization_data {
@@ -95,6 +98,8 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
 
 #ifdef DESKTOP
 
+#define MAX_MATERIAL_COUNT 1000
+#define MAX_TEXTURE_COUNT 500
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
 
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
@@ -135,8 +140,9 @@ inline std::vector<const char *> device_khr_extensions() {
 
 #else
 
+#define MAX_MATERIAL_COUNT 100
+#define MAX_TEXTURE_COUNT 50
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
-
 
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
                                                VkPhysicalDeviceFeatures &ft) {

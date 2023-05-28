@@ -103,7 +103,6 @@ void vk_swap_chain::create_swap_chain() {
                                 nullptr, &m_swap_chain),
            "Fail creating the swapChain");
   update_images();
-           
 }
 
 uint32_t vk_swap_chain::find_queue_family() {
@@ -216,8 +215,8 @@ void vk_swap_chain::update_images() {
                       0, 0, 1, 1);
 }
 
-void vk_swap_chain::create_depth_frame_buffer(const VkImageView &depth_image_view,
-                                              VkRenderPass &render_pass) {
+void vk_swap_chain::create_depth_frame_buffer(
+    const VkImageView &depth_image_view, VkRenderPass &render_pass) {
   clear_frame_buffer();
   m_depth_frame_buffers.resize(m_images_count);
 
@@ -231,9 +230,7 @@ void vk_swap_chain::create_depth_frame_buffer(const VkImageView &depth_image_vie
   framebufferInfo.pNext = nullptr;
 
   for (uint32_t i = 0; i < m_depth_frame_buffers.size(); i++) {
-    VkImageView attachments[2];
-    attachments[0] = m_image_views[i];
-    attachments[1] = depth_image_view;
+    VkImageView attachments[2] = {m_image_views[i], depth_image_view};
     framebufferInfo.pAttachments = attachments;
 
     VK_CHECK(vkCreateFramebuffer(m_device->get_device(), &framebufferInfo,

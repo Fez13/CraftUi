@@ -11,6 +11,16 @@
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/entities/extensions/generic_extensions.cpp.o -c /home/federico/CLionProjects/CraftUi/src/entities/extensions/generic_extensions.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/entities/extensions/generic_extensions.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/material.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/material.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/material.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/renderer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/renderer.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/renderer/renderer.cpp"
 },
@@ -18,6 +28,11 @@
   "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/window.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/window.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/renderer/window.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/scene.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/scene.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/scene.cpp"
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
