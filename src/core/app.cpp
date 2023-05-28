@@ -4,8 +4,12 @@
 #include "../entities/extensions/extension.h"
 #include "../entities/extensions/generic_extensions.h"
 #include "../entities/extensions/extension_labels.h"
+#include "../renderer/mesh.h"
+
 #include "../examples/glfw/glfw_examples.hpp"
 #include "../examples/vulkan/vulkan_examples.hpp"
+
+
 namespace cui {
 
 
@@ -31,6 +35,8 @@ void App::initialize() {
   
   transform* new_trf = attach_extension<transform>(new_entt);
   transform* get_new_trf= new_entt->get_extension<transform>();
+  
+  
   
 
   glfw::glfw_window window;

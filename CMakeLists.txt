@@ -22,6 +22,7 @@ src/renderer/renderer.h src/renderer/renderer.cpp
 src/renderer/window.h src/renderer/window.cpp 
 src/renderer/pipelines/pipeline_label.h  
 src/renderer/scene.h src/renderer/scene.cpp
+src/renderer/vertex.h src/renderer/vertex.cpp
 
 src/vulkan/vk_buffer.h src/vulkan/vk_buffer.cpp 
 src/vulkan/vk_graphic_device.h src/vulkan/vk_graphic_device.cpp 
