@@ -8,7 +8,7 @@
 namespace cui::renderer {
 
 struct vertex_2d {
-  glm::vec3 position;
+  glm::vec2 position;
   glm::vec2 texture_position;
 
   static VkVertexInputBindingDescription get_binding_description();

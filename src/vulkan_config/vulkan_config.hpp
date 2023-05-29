@@ -11,6 +11,7 @@
 
 namespace cui::vulkan {
 
+
 const struct structure_vulkan_initialization_data {
   const char *application_name = "Cui Test";
   uint32_t application_version = VK_MAKE_VERSION(0, 0, 1);
@@ -98,6 +99,8 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
 
 #ifdef DESKTOP
 
+#define INDEX_TYPE_VULKAN VK_INDEX_TYPE_UINT32
+#define INDEX_TYPE uint32_t
 #define MAX_MATERIAL_COUNT 1000
 #define MAX_TEXTURE_COUNT 500
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
@@ -140,6 +143,8 @@ inline std::vector<const char *> device_khr_extensions() {
 
 #else
 
+#define INDEX_TYPE_VULKAN VK_INDEX_TYPE_UINT32
+#define INDEX_TYPE uint32_t
 #define MAX_MATERIAL_COUNT 100
 #define MAX_TEXTURE_COUNT 50
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
