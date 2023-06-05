@@ -10,9 +10,10 @@ VkVertexInputBindingDescription vertex_3d::get_binding_description() {
   return binding_description;
 }
 
-std::array<VkVertexInputAttributeDescription, 3>
+std::vector<VkVertexInputAttributeDescription>
 vertex_3d::get_attribute_description() {
-  std::array<VkVertexInputAttributeDescription, 3> attribute_description;
+  std::vector<VkVertexInputAttributeDescription> attribute_description;
+  attribute_description.resize(attribute_count);
 
   attribute_description[0].binding = 0;
   attribute_description[0].location = 0;
@@ -40,9 +41,10 @@ VkVertexInputBindingDescription vertex_2d::get_binding_description() {
   return binding_description;
 }
 
-std::array<VkVertexInputAttributeDescription, 2>
+std::vector<VkVertexInputAttributeDescription>
 vertex_2d::get_attribute_description() {
-  std::array<VkVertexInputAttributeDescription, 2> attribute_description;
+  std::vector<VkVertexInputAttributeDescription> attribute_description;
+  attribute_description.resize(attribute_count);
 
   attribute_description[0].binding = 0;
   attribute_description[0].location = 0;

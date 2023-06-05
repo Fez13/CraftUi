@@ -41,6 +41,16 @@
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/mesh.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/mesh.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/mesh.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/pipelines/rasterization_pipeline.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/pipelines/rasterization_pipeline.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/pipelines/rasterization_pipeline.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp"
 },

@@ -1,10 +1,14 @@
 #pragma once
 
-#include <vector>
-
 #include "../../vendor/glm/glm.hpp"
 #include "../../vendor/glm/gtc/quaternion.hpp"
 #include "../../vendor/glm/gtx/quaternion.hpp"
+#include <vector>
+
+#include "../../renderer/material.h"
+#include "../../renderer/mesh.h"
+#include "../../renderer/pipelines/pipeline_label.h"
+#include "../../renderer/renderer.h"
 #include "../entity.h"
 #include "extension.h"
 #include "extension_labels.h"
@@ -86,7 +90,7 @@ struct transform : public extension {
   create_extension_data(CUI_EXTENSION_TRANSFORM, transform);
 
   bool destroy() override {
-    return remove_from_vector<transform>(this,s_instances);
+    return remove_from_vector<transform>(this, s_instances);
   }
 
   void update_main_matrix() {
@@ -115,6 +119,38 @@ private:
   updated_vec_3 m_position;
   updated_vec_3 m_rotation;
   updated_vec_3 m_scale;
+};
+
+using should_draw = uint8_t;
+enum : should_draw {
+  CUI_SHOULD_DRAW_ALWAYS = 0,
+  CUI_SHOULD_DRAW_NEVER = 1,
+  CUI_SHOULD_DRAW_FUNCTION = 2, //TODO
+  CUI_SHOULD_DRAW_ENUM_MAX = UINT8_MAX
+};
+struct drawable : public extension {
+public:
+  create_extension_data(CUI_EXTENSION_DRAWABLE, drawable);
+
+  bool destroy() override {
+    return remove_from_vector<drawable>(this, s_instances);
+  }
+
+  void set_pipeline(const renderer::pipeline_label pipeline_label);
+
+  void draw();
+
+  drawable() = default;
+  
+  drawable(renderer::mesh *mesh, renderer::material *material,transform *transform)
+      : m_mesh(mesh), m_material(material) , m_transform(transform){}
+
+private:
+  renderer::pipeline_label m_pipeline_label = renderer::CUI_PIPELINE_ENUM_MAX;
+  should_draw m_should_draw = CUI_SHOULD_DRAW_ENUM_MAX;
+  renderer::mesh *m_mesh = nullptr;
+  renderer::material *m_material = nullptr;
+  transform *m_transform = nullptr;
 };
 
 } // namespace cui::entities::extensions

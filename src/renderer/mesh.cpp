@@ -97,14 +97,14 @@ void mesh_manager::bind_vertices_3d(VkCommandBuffer &buffer,
   vkCmdBindVertexBuffers(buffer, 0, 1, m_vertex_buffer_array_3d.data(), offset);
 }
 
-mesh mesh_manager::create_mesh(mesh *mesh, geometry_2d *geometry) {
-  mesh->m_geometry = CUI_GEOMETRY_TYPE_2D;
-  m_3d_queue.emplace_back(mesh, geometry);
+void mesh_manager::create_mesh(mesh *mesh, geometry_2d *geometry) {
+  mesh->m_geometry = pipeline_info::CUI_GEOMETRY_TYPE_2D;
+  m_2d_queue.push_back({mesh, geometry});
 }
 
-mesh mesh_manager::create_mesh(mesh *mesh, geometry_3d *geometry) {
-  mesh->m_geometry = CUI_GEOMETRY_TYPE_3D;
-  m_2d_queue.emplace_back(mesh, geometry);
+void mesh_manager::create_mesh(mesh *mesh, geometry_3d *geometry) {
+  mesh->m_geometry = pipeline_info::CUI_GEOMETRY_TYPE_3D;
+  m_3d_queue.push_back({mesh, geometry});
 }
 
 void mesh_manager::initialize(vulkan::vk_device *device) {
@@ -146,7 +146,7 @@ void mesh_manager::initialize(vulkan::vk_device *device) {
   size_t vertices_2d_memory_size =
       static_cast<size_t>(sizeof(vertex_2d) * m_vertex_count_2d);
   std::vector<vertex_2d> vertices_2d_array;
-  vertices_2d_array.reserve(m_vertex_count_3d);
+  vertices_2d_array.reserve(m_vertex_count_2d);
 
   uint32_t i_index = 0;
   uint32_t i_vertex_3d = 0;

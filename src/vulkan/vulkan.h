@@ -1,5 +1,4 @@
 #pragma once
-#include "../vulkan_config/vulkan_config.hpp"
 #include "vk_device.h"
 #include "vk_graphic_device.h"
 #include "vk_instance.h"

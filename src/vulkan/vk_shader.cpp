@@ -31,10 +31,16 @@ void vk_shader::create_shader(std::vector<char> &data) {
 vk_shader::vk_shader(const std::string &path, vk_device *device) {
   m_device = device->get_device();
   m_path = path;
-  std::vector<char> data = read_binary_file(path.c_str()); 
+  std::vector<char> data = read_binary_file(path.c_str());
   create_shader(data);
 }
-  
-  
-  
+
+vk_graphic_shader::vk_graphic_shader(const std::string &path, vk_device *device,
+                                     const VkShaderStageFlagBits stage) : vk_shader(path,device), m_stage(stage) {
+  m_shader_stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  m_shader_stage.stage = m_stage;
+  m_shader_stage.module = m_shader_module;
+  m_shader_stage.pName = "main";
+}
+
 } // namespace cui::vulkan

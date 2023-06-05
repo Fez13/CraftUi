@@ -10,6 +10,7 @@
 
 #include "../core/macros.h"
 #include "../vendor/glm/glm.hpp"
+#include "../vulkan_config/vulkan_config.hpp"
 
 #include <vulkan/vulkan.h>
 namespace cui::vulkan {

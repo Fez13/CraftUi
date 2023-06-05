@@ -20,7 +20,7 @@ public:
     LOG("Warning, this is a virtual function for a extension, this should be "
         "overwritten, this may be a memory leak.",
         TEXT_COLOR_WARNING);
-    return CUI_EXTENSION_NULL;
+    return CUI_EXTENSION_ENUM_MAX;
   }
 
   virtual const bool no_discard() const { return false; }

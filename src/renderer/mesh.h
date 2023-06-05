@@ -4,17 +4,12 @@
 #include "../vendor/tinyobjloader/tiny_obj_loader.h"
 #include "../vulkan/vulkan.h"
 #include "../vulkan_config/vulkan_config.hpp"
+#include "pipelines/pipeline_label.h"
 #include "vertex.h"
 #include <iostream>
 #include <vector>
 namespace cui::renderer {
 
-using geometry_type = uint8_t;
-enum : geometry_type {
-  CUI_GEOMETRY_TYPE_3D = 0,
-  CUI_GEOMETRY_TYPE_2D = 1,
-  CUI_GEOMETRY_TYPE_NULL = 255
-};
 
 struct geometry_2d {
   std::vector<INDEX_TYPE> indices;
@@ -39,14 +34,14 @@ class mesh_manager;
 class mesh {
 public:
   const bool is_initialized() const { return m_initialized; }
-  const geometry_type get_geometry() const { return m_geometry; }
+  const pipeline_info::geometry_types get_geometry() const { return m_geometry; }
   const uint32_t get_vertices_start() const { return m_vertices_start; }
   const uint32_t get_vertices_count() const { return m_vertices_count; }
   const uint32_t get_indices_start() const { return m_indices_start; }
   const uint32_t get_indices_count() const { return m_indices_count; }
 
 private:
-  geometry_type m_geometry = CUI_GEOMETRY_TYPE_NULL;
+  pipeline_info::geometry_types m_geometry = pipeline_info::CUI_GEOMETRY_TYPE_NULL;
   uint32_t m_vertices_start = 0;
   uint32_t m_vertices_count = 0;
   uint32_t m_indices_start = 0;
@@ -64,8 +59,8 @@ public:
 
   void bind_vertices_3d(VkCommandBuffer &buffer, const VkDeviceSize *offset);
 
-  mesh create_mesh(mesh *mesh, geometry_2d *geometry);
-  mesh create_mesh(mesh *mesh, geometry_3d *geometry);
+  void create_mesh(mesh *mesh, geometry_2d *geometry);
+  void create_mesh(mesh *mesh, geometry_3d *geometry);
 
   void initialize(vulkan::vk_device* device);
 

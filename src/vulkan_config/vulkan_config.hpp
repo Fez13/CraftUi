@@ -105,6 +105,8 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
 #define MAX_TEXTURE_COUNT 500
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
 
+#define MAX_DRAW_COUNT 1000000
+
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
                                                VkPhysicalDeviceFeatures &ft) {
   if (ft.multiDrawIndirect != VK_TRUE)
@@ -148,6 +150,8 @@ inline std::vector<const char *> device_khr_extensions() {
 #define MAX_MATERIAL_COUNT 100
 #define MAX_TEXTURE_COUNT 50
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
+
+#define MAX_DRAW_COUNT 1000000
 
 inline bool vulkan_physical_device_necessities(VkPhysicalDeviceProperties &pt,
                                                VkPhysicalDeviceFeatures &ft) {
