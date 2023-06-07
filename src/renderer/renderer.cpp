@@ -56,7 +56,8 @@ void renderer::create_render_passes() {
         m_swap_chain->get_format(), VK_ATTACHMENT_LOAD_OP_CLEAR,
         VK_ATTACHMENT_STORE_OP_DONT_CARE, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
-    std::vector<VkAttachmentDescription> descriptions = {attachments_draw,attachments_depth};
+    std::vector<VkAttachmentDescription> descriptions = {attachments_draw,
+                                                         attachments_depth};
 
     VkAttachmentReference color_attachment{};
     color_attachment.attachment = 0;
@@ -173,13 +174,15 @@ void renderer::initialize(window *window) {
   m_device->create_fence(VK_FENCE_CREATE_SIGNALED_BIT);
   LOG("Renderer initialization done!", TEXT_COLOR_NOTIFICATION);
 }
+
+
 } // namespace cui::renderer
 
-/* //TODO 
+/* //TODO
   Scene ->
                      for existing pipeline      for existing mesh
   std::unordered_map<pipeline_label,std::vector<mesh_draw_calls>>
-  
+
   struct mesh_draw_calls{
     uint32_t count;
     std::vector<uint32_t> matrix;
@@ -187,6 +190,6 @@ void renderer::initialize(window *window) {
     std::vector<Transform*> transforms; //<- upload to gpu
     std::vector<vk_buffer*> special_data;
   };
-  
-  
+
+
 */

@@ -32,7 +32,8 @@ private:
 // This is a virtual class for a rasterization pipeline.
 class vk_rasterization_pipeline {
 public:
-  virtual void initialize(vk_device *device) {
+
+  virtual void initialize() {
     LOG("Warning this is a call from a virtual function, this should be "
         "overwritten by some derived class.",
         TEXT_COLOR_WARNING);
@@ -42,16 +43,14 @@ public:
         "this should be overwritten by some derived class.",
         TEXT_COLOR_WARNING);
   }
-  virtual void render(VkCommandBuffer &cmd, VkRenderPass &render_pass) {
+  virtual void render(VkCommandBuffer &cmd) {
     LOG("Warning this is a call from a virtual function, this should be "
         "overwritten by some derived class.",
         TEXT_COLOR_WARNING);
   }
-  virtual void set_view_port_state(const VkPipelineViewportStateCreateInfo
+  void set_view_port_state(const VkPipelineViewportStateCreateInfo
                                        &universal_view_port_state_create_info) {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+    m_pipeline_create_info.pViewportState = &universal_view_port_state_create_info;
   }
 
   virtual void update_size() {
@@ -60,10 +59,27 @@ public:
         TEXT_COLOR_WARNING);
   }
 
+  void set_fragment_shader(const std::string path){
+    m_fragment_shader = vk_graphic_shader(path,m_device,VK_SHADER_STAGE_FRAGMENT_BIT);
+  }
+  
+  void set_vertex_shader(const std::string path){
+    m_vertex_shader = vk_graphic_shader(path,m_device,VK_SHADER_STAGE_VERTEX_BIT);
+  }
+
   void set_dynamic_states(const std::vector<VkDynamicState> dynamic_states) {
     m_dynamic_states = dynamic_states;
   }
+  
+  void set_vulkan_device(vk_device *device){
+    m_device = device;
+  }
 
+  void set_render_pass(const VkRenderPass& render_pass){
+    m_render_pass = render_pass;
+  }
+  
+  
 protected:
   VkPipeline m_pipeline;
 

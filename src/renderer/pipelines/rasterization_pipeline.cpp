@@ -10,7 +10,7 @@ namespace cui::renderer {
     
     Populate shaders before pipeline initialization.
 */
-void default_rasterization_2d::initialize(vk_device *device) {
+void default_rasterization_2d::initialize() {
   /*
     Create a for pipeline specifics 
   */
@@ -27,6 +27,9 @@ void default_rasterization_2d::initialize(vk_device *device) {
   pipeline_create_depth_stencil_state_create_info();
   create_pipeline_layout(sizeof(camera_data));
   create_pipeline();
+  
+  initialize_default_mesh();
+  
 }
 
 void default_rasterization_2d::initialize_buffers() {
@@ -35,12 +38,7 @@ void default_rasterization_2d::initialize_buffers() {
 
 void default_rasterization_2d::free() {}
 
-void default_rasterization_2d::render(VkCommandBuffer &cmd,
-                                      VkRenderPass &render_pass) {}
-
-void default_rasterization_2d::set_view_port_state(
-    const VkPipelineViewportStateCreateInfo
-        &universal_view_port_state_create_info) {}
+void default_rasterization_2d::render(VkCommandBuffer &cmd) {}
 
 void default_rasterization_2d::update_size() {}
 

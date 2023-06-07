@@ -48,6 +48,8 @@ src/glfw/glfw.h src/glfw/glfw.cpp
 src/glfw/glfw_utils.h src/glfw/glfw_utils.cpp  
 src/glfw/glfw_window.h src/glfw/glfw_window.cpp  
 
+src/utils/utils.hpp
+
 src/vendor/stb/stb.cpp src/vendor/stb/stb_image.h src/vendor/stb/stb_truetype.h 
 src/vendor/tinyobjloader/tiny_obj_loader.h src/vendor/tinyobjloader/tiny_obj_loader.cpp)
 
