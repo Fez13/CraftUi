@@ -29,6 +29,7 @@ private:
   VkSemaphore m_compute_semaphore = nullptr;
 };
 
+
 // This is a virtual class for a rasterization pipeline.
 class vk_rasterization_pipeline {
 public:
@@ -79,10 +80,10 @@ public:
     m_render_pass = render_pass;
   }
   
+  vk_descriptor_set_array& get_descriptors(){
+    return m_descriptor_sets;
+  }
   
-protected:
-  VkPipeline m_pipeline;
-
   virtual void initialize_default_mesh() {
     LOG("Warning this is a call from a virtual function, this should be "
         "overwritten by some derived class.",
@@ -94,6 +95,12 @@ protected:
         "overwritten by some derived class.",
         TEXT_COLOR_WARNING);
   }
+  
+  void set_viewport_state(const VkPipelineViewportStateCreateInfo *viewPort);
+  
+protected:
+  VkPipeline m_pipeline;
+
   
   void initialize_default_draw_buffers();
 
@@ -192,8 +199,6 @@ protected:
   void pipeline_create_depth_stencil_state_create_info(
       const VkBool32 depthTest = VK_TRUE, const VkBool32 depthWrite = VK_TRUE,
       const VkBool32 depthBounds = VK_FALSE);
-
-  void set_viewport_state(const VkPipelineViewportStateCreateInfo *viewPort);
   
   void create_pipeline_layout(const size_t size_of_push);
   

@@ -101,8 +101,8 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
 
 #define INDEX_TYPE_VULKAN VK_INDEX_TYPE_UINT32
 #define INDEX_TYPE uint32_t
-#define MAX_MATERIAL_COUNT 1000
-#define MAX_TEXTURE_COUNT 500
+#define MAX_MATERIAL_COUNT 100 //1000
+#define MAX_TEXTURE_COUNT 50 //500
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
 
 #define MAX_DRAW_COUNT 1000000

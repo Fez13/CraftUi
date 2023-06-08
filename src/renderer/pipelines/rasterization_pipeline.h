@@ -5,7 +5,6 @@
 namespace cui::renderer {
 
 using namespace vulkan;
-
 class default_rasterization_2d : public vk_rasterization_pipeline {
 
 public:
@@ -17,13 +16,12 @@ public:
   
   void update_size() override;
 
-private:
-  
-  vk_descriptor_set *m_descriptor;
-  
   void initialize_buffers() override;
   
   void initialize_default_mesh() override{};
+    
+private:
+  vk_descriptor_set *m_descriptor;
   
 };
 

@@ -175,6 +175,11 @@ void renderer::initialize(window *window) {
   LOG("Renderer initialization done!", TEXT_COLOR_NOTIFICATION);
 }
 
+void renderer::set_default_descriptor_positions(vulkan::vk_descriptor_set_array* dsta){
+  vulkan::vk_descriptor_set* dst = dsta->create();
+  dst->create_binding_uniform_buffer(0,VK_SHADER_STAGE_ALL); //Default buffer
+  dst->create_binding_uniform_buffer(1,VK_SHADER_STAGE_ALL); //Transforms
+}
 
 } // namespace cui::renderer
 

@@ -93,6 +93,7 @@ private:
 struct vk_descriptor_set_array {
 public:
   vk_descriptor_set_array(vk_device *device) : m_device(device) {}
+  vk_descriptor_set_array() = default;
 
   /*
     @brief Will bind all descriptor sets of the array to the pipeline.
@@ -160,7 +161,7 @@ public:
 
 private:
   bool lock = false;
-  vk_device *m_device;
+  vk_device *m_device = nullptr;
   std::vector<VkDescriptorSet> m_descriptors;
   std::vector<vk_descriptor_set *> m_data;
 };

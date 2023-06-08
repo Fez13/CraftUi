@@ -5,8 +5,7 @@ namespace cui::util {
 
 template <class T> struct optional_parameter {
 public:
-  optional_parameter(const T optional_data) {
-    data = optional_data;
+  optional_parameter(const T optional_data) : data(optional_data) {
     m_exists = true;
   }
 
@@ -32,7 +31,7 @@ public:
     return else_arg;
   }
 
-  const bool exists() { return exists; }
+  const bool exists() { return m_exists; }
 
 private:
   bool m_exists = false;

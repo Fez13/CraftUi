@@ -10,6 +10,7 @@ namespace cui::vulkan {
 class vk_shader {
 public:
   vk_shader(const std::string &path, vk_device *device);
+  vk_shader() = default;
 
   VkShaderModule get_shader_module() { return m_shader_module; }
 
@@ -24,7 +25,10 @@ class vk_graphic_shader : public vk_shader {
 public:
   vk_graphic_shader(const std::string &path, vk_device *device,
                     const VkShaderStageFlagBits stage);
-  VkPipelineShaderStageCreateInfo get_shader_stage_create_info() {return m_shader_stage;}
+  vk_graphic_shader() = default;
+  VkPipelineShaderStageCreateInfo get_shader_stage_create_info() {
+    return m_shader_stage;
+  }
 
 protected:
   VkShaderStageFlagBits m_stage;

@@ -5,6 +5,7 @@
 #include "../entities/extensions/extension_labels.h"
 #include "../entities/extensions/generic_extensions.h"
 #include "../renderer/mesh.h"
+#include "../renderer/pipelines/rasterization_pipeline.h"
 
 #include "../examples/glfw/glfw_examples.hpp"
 #include "../examples/vulkan/vulkan_examples.hpp"
@@ -59,7 +60,7 @@ void App::initialize() {
   transform *new_trf = attach_extension<transform>(new_entt);
   drawable *new_drawable = attach_extension<drawable>(new_entt,&new_mesh,nullptr,new_trf);
   
-  
+  renderer::renderer::get().create_draw_pipeline<vulkan::vk_rasterization_pipeline>({""},{""},renderer::CUI_PIPELINE_RASTERIZATION_DEFAULT);
 
   LOG("Close the window to finish the window test.", TEXT_COLOR_NOTIFICATION);
   while (!glfwWindowShouldClose(window.get_glfw_window())) {

@@ -78,6 +78,8 @@ public:
 
   static void free_buffer() { s_materials_buffer.free(); }
 
+  vulkan::vk_descriptor_set* set_descriptor_positions(vulkan::vk_descriptor_set_array* dsta);
+
   explicit material();
 
 private:

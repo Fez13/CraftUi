@@ -30,13 +30,14 @@ public:
     new_pipeline->set_dynamic_states(
         {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR});
     new_pipeline->set_render_pass(m_draw_render_pass);
+    set_default_descriptor_positions(&new_pipeline->get_descriptors());
             
     //plCreateViewportStateCreateInfo
 
-    new_pipeline->set_view_port_state();
+    new_pipeline->set_view_port_state(m_universal_view_port_state);
     new_pipeline->initialize();
-    //TODO: Create default buffers
     new_pipeline->initialize_buffers();
+    return new_pipeline;
   }
 
   template <class pipeline>
@@ -72,6 +73,14 @@ public:
   static renderer &get() { return s_instance; }
 
 private:
+  
+  /*
+    Default buffers are:
+      
+  
+  */
+  void set_default_descriptor_positions(vulkan::vk_descriptor_set_array* dsta);
+
   renderer() = default;
 
   void update_view_port();
