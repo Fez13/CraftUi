@@ -14,12 +14,13 @@ void vk_swap_chain::create_swap_chain() {
   ASSERT(m_surface == VK_NULL_HANDLE,
          "Error you need to initialize the swap chain before creating it.",
          TEXT_COLOR_ERROR);
-
+         
   create_proprieties();
   find_queue_family();
   m_device->add_queue({"GRAPHIC", get_queue_family()});
   m_queue_families = vk_device_manager::get().get_all_used_families();
-  static bool done = false;
+
+
   bool presents_feature[2] = {false, false};
 
   for (const auto &format : m_proprieties.surface_formats)
@@ -29,80 +30,26 @@ void vk_swap_chain::create_swap_chain() {
       presents_feature[0] = true;
     }
 
-  if (!presents_feature[0] && !done) {
+  if (!presents_feature[0]) {
     m_surface_formate = m_proprieties.surface_formats[0];
     LOG("A not optimal format has been chose for a swap chain",
         TEXT_COLOR_WARNING);
   }
-
+  
   for (const auto &presentMode : m_proprieties.present_modes)
     if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
       m_present_mode = presentMode;
       presents_feature[1] = true;
     }
 
-  if (!presents_feature[1] && !done) {
+  if (!presents_feature[1]) {
     m_present_mode = VK_PRESENT_MODE_FIFO_KHR;
     LOG("A not optimal present mode has been chose for a swap chain",
         TEXT_COLOR_WARNING);
   }
 
-  if (m_proprieties.surface_capabilities.currentExtent.width !=
-      std::numeric_limits<uint32_t>::max()) {
-    m_extent = m_proprieties.surface_capabilities.currentExtent;
-  } else {
-    // If the screen coordinates and the screen pixels do not match, we have to
-    // fix the error
 
-    VkExtent2D extent2D{static_cast<uint32_t>(m_height),
-                        static_cast<uint32_t>(m_width)};
-
-    m_extent.width = std::clamp(
-        extent2D.width, m_proprieties.surface_capabilities.minImageExtent.width,
-        m_proprieties.surface_capabilities.maxImageExtent.width);
-
-    m_extent.height =
-        std::clamp(extent2D.height,
-                   m_proprieties.surface_capabilities.minImageExtent.height,
-                   m_proprieties.surface_capabilities.maxImageExtent.height);
-    LOG("Not optimal extent has been chose", TEXT_COLOR_WARNING);
-  }
-
-  // Sets a number of images in the swap chain
-  uint32_t image_count = m_images_count;
-
-  if (m_images_count == 0)
-    image_count = m_proprieties.surface_capabilities.minImageCount;
-  else if (m_images_count > m_proprieties.surface_capabilities.maxImageCount &&
-           m_proprieties.surface_capabilities.maxImageCount != 0)
-    image_count = m_proprieties.surface_capabilities.minImageCount;
-  else if (m_images_count < m_proprieties.surface_capabilities.minImageCount)
-    image_count = m_proprieties.surface_capabilities.minImageCount;
-
-  m_images_count = image_count;
-
-  m_images.clear();
-  m_images.resize(image_count);
-
-  VkSwapchainCreateInfoKHR swap_chain_create_info = vkcSwapchainCreateInfoKHR(
-      m_surface, m_images_count, m_surface_formate.format,
-      m_surface_formate.colorSpace, m_extent,
-      m_proprieties.surface_capabilities.currentTransform, m_present_mode);
-
-  if (m_queue_families.size() != 1) {
-    swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-    swap_chain_create_info.queueFamilyIndexCount = m_queue_families.size();
-    swap_chain_create_info.pQueueFamilyIndices = m_queue_families.data();
-  } else {
-    swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    swap_chain_create_info.queueFamilyIndexCount = 1;
-    swap_chain_create_info.pQueueFamilyIndices = m_queue_families.data();
-  }
-  done = true;
-  VK_CHECK(vkCreateSwapchainKHR(m_device->get_device(), &swap_chain_create_info,
-                                nullptr, &m_swap_chain),
-           "Fail creating the swapChain");
-  update_images();
+  update_swap_chain();
 }
 
 uint32_t vk_swap_chain::find_queue_family() {
@@ -137,9 +84,6 @@ uint32_t vk_swap_chain::find_queue_family() {
 }
 
 void vk_swap_chain::create_proprieties() {
-  if (m_proprieties.populated)
-    return;
-
   VK_CHECK(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
                vk_graphic_device::get().get_device(), m_surface,
                &m_proprieties.surface_capabilities),
@@ -168,14 +112,83 @@ void vk_swap_chain::create_proprieties() {
                vk_graphic_device::get().get_device(), m_surface,
                &present_mode_count, m_proprieties.present_modes.data()),
            "Error creating swap chain capabilities");
-  m_proprieties.populated = true;
 }
 
-void vk_swap_chain::update_swap_chain() {}
+VkPresentInfoKHR vk_swap_chain::get_submit_image_info(const uint32_t &index,
+                                                      VkSemaphore wait[]) {
+  VkPresentInfoKHR presentInfo{};
+  presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+  presentInfo.waitSemaphoreCount = 1;
+  presentInfo.pWaitSemaphores = wait;
+  presentInfo.swapchainCount = 1;
+  presentInfo.pSwapchains = &m_swap_chain;
+  presentInfo.pImageIndices = &index;
+  presentInfo.pResults = nullptr;
+  presentInfo.pNext = nullptr;
+  return presentInfo;
+}
+
+void vk_swap_chain::update_swap_chain() {
+  clear_image_views();
+  create_proprieties();
+  if (m_proprieties.surface_capabilities.currentExtent.width !=
+      std::numeric_limits<uint32_t>::max()) {
+    m_extent = m_proprieties.surface_capabilities.currentExtent;
+  } else {
+    // If the screen coordinates and the screen pixels do not match, we have to
+    // fix the error
+
+    VkExtent2D extent2D{static_cast<uint32_t>(m_height),
+                        static_cast<uint32_t>(m_width)};
+
+    m_extent.width = std::clamp(
+        extent2D.width, m_proprieties.surface_capabilities.minImageExtent.width,
+        m_proprieties.surface_capabilities.maxImageExtent.width);
+
+    m_extent.height =
+        std::clamp(extent2D.height,
+                   m_proprieties.surface_capabilities.minImageExtent.height,
+                   m_proprieties.surface_capabilities.maxImageExtent.height);
+    LOG("Not optimal extent has been chose", TEXT_COLOR_WARNING);
+  }
+
+  // Sets a number of images in the swap chain
+  uint32_t image_count = m_images_count;
+
+  if (m_images_count == 0)
+    image_count = m_proprieties.surface_capabilities.minImageCount;
+  else if (m_images_count > m_proprieties.surface_capabilities.maxImageCount &&
+           m_proprieties.surface_capabilities.maxImageCount != 0)
+    image_count = m_proprieties.surface_capabilities.minImageCount;
+  else if (m_images_count < m_proprieties.surface_capabilities.minImageCount)
+    image_count = m_proprieties.surface_capabilities.minImageCount;
+
+  m_images_count = image_count;
+
+  VkSwapchainCreateInfoKHR swap_chain_create_info = vkcSwapchainCreateInfoKHR(
+      m_surface, m_images_count, m_surface_formate.format,
+      m_surface_formate.colorSpace, m_extent,
+      m_proprieties.surface_capabilities.currentTransform, m_present_mode,m_swap_chain);
+
+  if (m_queue_families.size() != 1) {
+    swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+    swap_chain_create_info.queueFamilyIndexCount = m_queue_families.size();
+    swap_chain_create_info.pQueueFamilyIndices = m_queue_families.data();
+  } else {
+    swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    swap_chain_create_info.queueFamilyIndexCount = 1;
+    swap_chain_create_info.pQueueFamilyIndices = m_queue_families.data();
+  }
+  
+  VK_CHECK(vkCreateSwapchainKHR(m_device->get_device(), &swap_chain_create_info,
+                                nullptr, &m_swap_chain),
+           "Fail creating the swapChain");
+  update_images();
+}
 
 void vk_swap_chain::update_images() {
 
-  clear_images();
+  
   // Update images
   uint32_t image_count = 0;
   vkGetSwapchainImagesKHR(m_device->get_device(), m_swap_chain, &image_count,
@@ -184,13 +197,7 @@ void vk_swap_chain::update_images() {
   m_images.resize(image_count);
   vkGetSwapchainImagesKHR(m_device->get_device(), m_swap_chain, &image_count,
                           m_images.data());
-
-  if (image_count != m_images.size())
-    LOG("WARNING, the n of images in the swap-chain is not the expected",
-        TEXT_COLOR_WARNING);
-
   // Update views
-
   VkImageViewCreateInfo info{};
   info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
   info.viewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -207,7 +214,7 @@ void vk_swap_chain::update_images() {
   info.subresourceRange.baseArrayLayer = 0;
   info.subresourceRange.layerCount = 1;
 
-  clear_image_views();
+  // clear_image_views();
   m_image_views.resize(m_images.size());
   for (uint32_t i = 0; i < m_image_views.size(); i++)
     create_image_view(VK_IMAGE_VIEW_TYPE_2D, m_surface_formate.format, m_device,
@@ -239,8 +246,7 @@ void vk_swap_chain::create_depth_frame_buffer(
   }
 }
 
-void vk_swap_chain::get_next_image(uint32_t &image_index, VkSemaphore finish,
-                                   VkImageView &image_view) {
+void vk_swap_chain::get_next_image(uint32_t &image_index, VkSemaphore finish) {
   vkAcquireNextImageKHR(m_device->get_device(), m_swap_chain, UINT64_MAX,
                         finish, VK_NULL_HANDLE, &image_index);
 }

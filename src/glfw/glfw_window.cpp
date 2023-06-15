@@ -8,13 +8,10 @@ void glfw_window::set_window_size(const uint32_t width, const uint32_t height,
   m_height = height;
   if (update_glfw_window)
     glfwSetWindowSize(m_window, width, height);
+  m_device->wait_to_finish("GRAPHIC");
   m_swap_chain.set_image_size(width, height);
-  m_swap_chain.create_swap_chain();
-}
-
-void glfw_window::create_depth_image(vulkan::vk_image *image,
-                                     VkRenderPass &render_pass) {
-  m_swap_chain.create_depth_frame_buffer(image->get_image_view(), render_pass);
+  m_swap_chain.update_swap_chain();
+  m_update = true;
 }
 
 void glfw_window::set_window_refresh_rate(const float refresh) {

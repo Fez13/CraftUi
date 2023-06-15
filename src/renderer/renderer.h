@@ -10,19 +10,27 @@
 namespace cui::renderer {
 
 using namespace pipeline_info;
+
+struct default_buffer_data {
+  int window_height;
+  int window_width;
+  float time;
+  int frame_rate;
+  float random_number;
+};
+
 class renderer {
 public:
-  //TODO:
-  //plCreateViewportStateCreateInfo();
-
   template <class pipeline>
   pipeline *
   create_draw_pipeline(util::optional_parameter<const std::string> fragment,
                        util::optional_parameter<const std::string> vertex,
                        const pipeline_label label) {
     m_ubiquitous_pipelines[label] = std::make_unique<pipeline>();
-    pipeline *new_pipeline = m_ubiquitous_pipelines[label].get();
+    vulkan::vk_rasterization_pipeline *new_pipeline =
+        m_ubiquitous_pipelines[label].get();
 
+    new_pipeline->m_descriptor_sets = vulkan::vk_descriptor_set_array(m_device);
     new_pipeline->set_vulkan_device(m_device);
     new_pipeline->set_fragment_shader(fragment.get_copy_else("TODO"));
     new_pipeline->set_vertex_shader(vertex.get_copy_else("TODO"));
@@ -30,14 +38,18 @@ public:
     new_pipeline->set_dynamic_states(
         {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR});
     new_pipeline->set_render_pass(m_draw_render_pass);
-    set_default_descriptor_positions(&new_pipeline->get_descriptors());
-            
-    //plCreateViewportStateCreateInfo
 
-    new_pipeline->set_view_port_state(m_universal_view_port_state);
+    //Pipeline descriptors
+    vulkan::vk_descriptor_set *dst = new_pipeline->m_descriptor_sets.create();
+    dst->create_binding_uniform_buffer(0,
+                                       VK_SHADER_STAGE_ALL); // Default buffer
+    dst->create_binding_uniform_buffer(1, VK_SHADER_STAGE_ALL); // Transforms
+    
+    new_pipeline->set_viewport_state(&m_universal_view_port_state);
     new_pipeline->initialize();
     new_pipeline->initialize_buffers();
-    return new_pipeline;
+    
+    return static_cast<pipeline *>(new_pipeline);
   }
 
   template <class pipeline>
@@ -54,14 +66,14 @@ public:
   @brief Will call draw on default pipelines.
   */
   // TODO
-  void draw(){};
+  void draw();
 
   /*
   @brief Will call draw on occasional pipelines as shadow mapping or one draw
   pipelines.
   */
   // TODO
-  void update_occasional_pipelines();
+  void update_occasional_pipelines() {}
 
   /*
   @brief Adapts pipelines and images to swap_chain sizes.
@@ -73,13 +85,27 @@ public:
   static renderer &get() { return s_instance; }
 
 private:
-  
   /*
     Default buffers are:
-      
-  
+
+
   */
-  void set_default_descriptor_positions(vulkan::vk_descriptor_set_array* dsta);
+
+  // TODO
+  void create_semaphore() {
+    VkSemaphoreCreateInfo semaphoreCreateInfo{};
+    semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    vkCreateSemaphore(m_device->get_device(), &semaphoreCreateInfo, nullptr,
+                      &m_image_wait);
+    vkCreateSemaphore(m_device->get_device(), &semaphoreCreateInfo, nullptr,
+                      &m_render_wait);
+  }
+
+  glm::vec4 m_clear_color = {1, 1, 1, 1};
+
+  void record_command_buffer(const uint32_t index);
+
+  void begin_render_pass(const uint32_t index);
 
   renderer() = default;
 
@@ -111,6 +137,12 @@ private:
   VkRect2D m_scissor;
 
   VkPipelineViewportStateCreateInfo m_universal_view_port_state;
+
+  // TODO: initialize
+  VkSemaphore m_image_wait;
+  VkSemaphore m_render_wait;
+
+  VkCommandBuffer m_command_buffer;
 
   static renderer s_instance;
 };

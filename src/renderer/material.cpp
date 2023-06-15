@@ -4,7 +4,7 @@ namespace cui::renderer {
 
 void material::create_descriptor_set_locations(
     vulkan::vk_descriptor_set *descriptorSet) {
-  descriptorSet->create_binding_sampler(0, VK_SHADER_STAGE_FRAGMENT_BIT);
+  descriptorSet->create_binding_sampler(0, VK_SHADER_STAGE_FRAGMENT_BIT,1);
   descriptorSet->create_binding_sampled_image(1, VK_SHADER_STAGE_FRAGMENT_BIT,
                                               MAX_TEXTURE_COUNT);
   descriptorSet->create_binding_uniform_buffer(2, VK_SHADER_STAGE_ALL);
@@ -62,13 +62,11 @@ void material::create_material_buffer(const std::string deviceName) {
 vulkan::vk_descriptor_set *
 material::set_descriptor_positions(vulkan::vk_descriptor_set_array *dsta) {
   vulkan::vk_descriptor_set *dst = dsta->create();
-  dst->create_binding_sampler(0, VK_SHADER_STAGE_ALL); // Default sampler
+  dst->create_binding_sampler(0, VK_SHADER_STAGE_ALL,1); // Default sampler
   dst->create_binding_sampled_image(1, VK_SHADER_STAGE_ALL,
                                     MAX_TEXTURE_COUNT); // Image array
-  dst->create_binding_uniform_buffer(2, VK_SHADER_STAGE_ALL,
-                                     MAX_MATERIAL_COUNT); // Material array
-  dst->create_binding_uniform_buffer(3, VK_SHADER_STAGE_ALL,
-                                     MAX_DRAW_COUNT); // Material index array
+  dst->create_binding_uniform_buffer(2, VK_SHADER_STAGE_ALL,1); // Material array
+  dst->create_binding_uniform_buffer(3, VK_SHADER_STAGE_ALL,1); // Material index array
   return dst;
 }
 

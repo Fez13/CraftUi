@@ -298,7 +298,7 @@ VkSwapchainCreateInfoKHR vkcSwapchainCreateInfoKHR(
     const VkFormat &image_format, const VkColorSpaceKHR &color_space,
     const VkExtent2D &extent,
     const VkSurfaceTransformFlagBitsKHR transform_flags,
-    const VkPresentModeKHR present_mode) {
+    const VkPresentModeKHR present_mode,const VkSwapchainKHR& old_swap_chain) {
 
   VkSwapchainCreateInfoKHR swap_chain_info = {};
   swap_chain_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -313,7 +313,7 @@ VkSwapchainCreateInfoKHR vkcSwapchainCreateInfoKHR(
   swap_chain_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
   swap_chain_info.presentMode = present_mode;
   swap_chain_info.clipped = VK_TRUE;
-  swap_chain_info.oldSwapchain = VK_NULL_HANDLE;
+  swap_chain_info.oldSwapchain = old_swap_chain;
   swap_chain_info.pNext = nullptr;
   return swap_chain_info;
 }

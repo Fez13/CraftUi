@@ -149,7 +149,8 @@ VkSwapchainCreateInfoKHR vkcSwapchainCreateInfoKHR(
     const VkFormat &image_format, const VkColorSpaceKHR &color_space,
     const VkExtent2D &extent,
     const VkSurfaceTransformFlagBitsKHR transform_flags,
-    const VkPresentModeKHR present_mode);
+    const VkPresentModeKHR present_mode,
+    const VkSwapchainKHR& old_swap_chain);
 
 //
 // Pipeline

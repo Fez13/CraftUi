@@ -33,15 +33,22 @@ enum : text_color {
     throw std::runtime_error("Vulkan error");                                  \
   }
 
+#define VIRTUAL_CALL_WARNING()                                                 \
+  LOG("Warning this is a call from a virtual function, this should be "        \
+      "overwritten by some derived class.",                                    \
+      TEXT_COLOR_WARNING)
+
 #else
 #define LOG(text, color) ;
 #define ASSERT(condition, text, color) ;
 #define VK_CHECK(function) ;
 #define GET_ELAPSED() ;
+#define VIRTUAL_CALL_WARNING() ;
 
 #endif
 
 namespace macros_functions {
+
 inline void log(const std::string data, text_color color, const char *file,
                 const int line) {
   if (color == TEXT_COLOR_NORMAL)
@@ -62,6 +69,7 @@ inline void log(const std::string data, text_color color, const char *file,
             << "\n\t Data:  " << data << "\033[0m"
             << "\n";
 }
+
 template <class chronoTimeMesure = std::chrono::nanoseconds>
 inline long getElapsedTime() {
   std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();

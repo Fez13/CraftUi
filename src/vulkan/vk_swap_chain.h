@@ -38,8 +38,7 @@ public:
 
   VkExtent2D get_extent() const { return m_extent; }
 
-  void get_next_image(uint32_t &image_index, VkSemaphore finish,
-                      VkImageView &image_view);
+  void get_next_image(uint32_t &image_index, VkSemaphore finish);
 
   VkFramebuffer get_frame_buffer(const uint32_t index) const {
     return m_depth_frame_buffers[index];
@@ -53,6 +52,8 @@ public:
 
   void update_swap_chain();
   void update_images();
+  
+  VkPresentInfoKHR get_submit_image_info(const uint32_t &index, VkSemaphore wait[]);
 
 private:
   void clear_frame_buffer();
@@ -72,7 +73,7 @@ private:
   VkPresentModeKHR m_present_mode;
   VkExtent2D m_extent;
   uint32_t m_images_count;
-  VkSwapchainKHR m_swap_chain;
+  VkSwapchainKHR m_swap_chain = VK_NULL_HANDLE;
 
   std::vector<VkImage> m_images;
   std::vector<VkImageView> m_image_views;

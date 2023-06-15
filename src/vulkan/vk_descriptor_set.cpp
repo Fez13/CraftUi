@@ -6,13 +6,12 @@ std::vector<vk_descriptor_set> vk_descriptor_set::s_instancies = {};
 vk_descriptor_set::vk_descriptor_set(vk_device *device) : m_device(device) {}
 
 vk_descriptor_set *vk_descriptor_set::create(vk_device *device) {
-  s_instancies.push_back(vk_descriptor_set(device));
+  s_instancies.emplace_back(device);
   return &s_instancies[s_instancies.size() - 1];
 }
 
 void vk_descriptor_set::initialize_layout() {
   const uint32_t binding_count = m_bindings.size();
-
   std::vector<VkDescriptorSetLayoutBinding> bindings_layout;
   bindings_layout.resize(binding_count);
 
@@ -113,8 +112,7 @@ void vk_descriptor_set::create_binding_sampled_image(
 }
 
 void vk_descriptor_set::create_binding_sampler(
-    uint32_t binding,
-    const VkShaderStageFlagBits stages,
+    uint32_t binding, const VkShaderStageFlagBits stages,
     const uint32_t sampler_count) {
   ASSERT(m_locked,
          "Tried to add binding to locked descriptor. Add the bindings first "
@@ -236,11 +234,12 @@ void vk_descriptor_set::update_binding_sampled_image(const uint32_t binding,
 void vk_descriptor_set::update_binding_sampler(const uint32_t binding,
                                                const VkSampler *samplers,
                                                const uint32_t count) {
-  ASSERT(!m_bindings.contains(binding),
-         "A sampler has tried to be binded to index: " + std::to_string(binding) +
-             ",however, this position is not \n\t being used by the current "
-             "descriptor...",
-         TEXT_COLOR_ERROR);
+  ASSERT(
+      !m_bindings.contains(binding),
+      "A sampler has tried to be binded to index: " + std::to_string(binding) +
+          ",however, this position is not \n\t being used by the current "
+          "descriptor...",
+      TEXT_COLOR_ERROR);
 
   std::vector<VkDescriptorImageInfo> sampler_info;
   sampler_info.resize(count);
@@ -250,7 +249,7 @@ void vk_descriptor_set::update_binding_sampler(const uint32_t binding,
     sampler_info[i].sampler = samplers[i];
     sampler_info[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
   }
-  
+
   VkWriteDescriptorSet write_descriptor_set{};
   write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
   write_descriptor_set.descriptorType = m_bindings[binding].type;

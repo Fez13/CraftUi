@@ -21,25 +21,33 @@ void renderer::update_view_port() {
   m_universal_view_port_state.pScissors = &m_scissor;
 }
 
+// TODO
+#define DEPTH_IMAGE_FORMAT VK_FORMAT_D32_SFLOAT
+
 void renderer::update_extents() {
-  if (m_depth_image.get_image() != nullptr)
+  m_device->wait_to_finish("GRAPHIC");
+  if (m_depth_image.get_image() != nullptr) {
     m_depth_image.free();
+  }
 
   m_depth_image = vulkan::vk_image(
-      "DEVICE_KHR", VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_D32_SFLOAT,
+      "DEVICE_KHR", VK_IMAGE_TILING_OPTIMAL, DEPTH_IMAGE_FORMAT,
       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_IMAGE_ASPECT_DEPTH_BIT,
       m_swap_chain->get_extent().width, m_swap_chain->get_extent().height);
 
   update_view_port();
 
   for (auto &[label, pipeline] : m_occasional_pipelines) {
-    pipeline->set_view_port_state(m_universal_view_port_state);
+    pipeline->set_viewport_state(&m_universal_view_port_state);
     pipeline->update_size();
   }
   for (auto &[label, pipeline] : m_ubiquitous_pipelines) {
-    pipeline->set_view_port_state(m_universal_view_port_state);
+    pipeline->set_viewport_state(&m_universal_view_port_state);
     pipeline->update_size();
   }
+
+  m_swap_chain->create_depth_frame_buffer(m_depth_image.get_image_view(),
+                                          m_draw_render_pass);
 }
 
 void renderer::create_render_passes() {
@@ -48,7 +56,7 @@ void renderer::create_render_passes() {
 
     VkAttachmentDescription attachments_depth =
         vulkan::vkcAttachmentDescription(
-            m_depth_image.get_format(), VK_ATTACHMENT_LOAD_OP_CLEAR,
+            DEPTH_IMAGE_FORMAT, VK_ATTACHMENT_LOAD_OP_CLEAR,
             VK_ATTACHMENT_STORE_OP_STORE,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
@@ -166,19 +174,134 @@ void renderer::initialize(window *window) {
   m_device = vulkan::vk_device_manager::get().get_device("DEVICE_KHR");
   m_graphic_queue = m_device->get_queue("GRAPHIC");
 
-  update_extents();
   create_render_passes();
+  create_semaphore();
+  update_extents();
 
-  m_swap_chain->create_depth_frame_buffer(m_depth_image.get_image_view(),
-                                          m_draw_render_pass);
   m_device->create_fence(VK_FENCE_CREATE_SIGNALED_BIT);
+  m_command_buffer = m_device->create_command_buffers(
+      VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1,
+      m_device->get_queue("GRAPHIC").command_pool),
   LOG("Renderer initialization done!", TEXT_COLOR_NOTIFICATION);
 }
 
-void renderer::set_default_descriptor_positions(vulkan::vk_descriptor_set_array* dsta){
-  vulkan::vk_descriptor_set* dst = dsta->create();
-  dst->create_binding_uniform_buffer(0,VK_SHADER_STAGE_ALL); //Default buffer
-  dst->create_binding_uniform_buffer(1,VK_SHADER_STAGE_ALL); //Transforms
+void renderer::draw() {
+
+  // Check for window size changes
+  if (m_window->get_update()) {
+    update_extents();
+  }
+
+  uint32_t image_index = 0;
+  m_window->get_swap_chain()->get_next_image(image_index, m_image_wait);
+
+  vkWaitForFences(m_device->get_device(), 1, &m_device->get_fence(), VK_TRUE,
+                  UINT64_MAX);
+  vkResetFences(m_device->get_device(), 1, &m_device->get_fence());
+
+  vkResetCommandBuffer(m_command_buffer, 0);
+  m_device->reset_command_pool("GRAPHIC");
+  record_command_buffer(image_index);
+
+  VkSubmitInfo submitInfo{};
+  submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+  VkSemaphore waitSemaphores[] = {m_image_wait};
+  VkPipelineStageFlags waitStages[] = {
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+  submitInfo.waitSemaphoreCount = 1;
+  submitInfo.pWaitSemaphores = waitSemaphores;
+  submitInfo.pWaitDstStageMask = waitStages;
+  submitInfo.commandBufferCount = 1;
+  submitInfo.pCommandBuffers = &m_command_buffer;
+
+  VkSemaphore signalSemaphores[] = {m_render_wait};
+  submitInfo.signalSemaphoreCount = 1;
+  submitInfo.pSignalSemaphores = signalSemaphores;
+
+  VK_CHECK(vkQueueSubmit(m_device->get_queue("GRAPHIC").queue, 1, &submitInfo,
+                         m_device->get_fence()),
+           "Fail submitting work to the gpu");
+
+  VkPresentInfoKHR presentInfoKhr =
+      m_window->get_swap_chain()->get_submit_image_info(image_index,
+                                                        signalSemaphores);
+
+  vkQueuePresentKHR(m_device->get_queue("GRAPHIC").queue, &presentInfoKhr);
+}
+
+void renderer::begin_render_pass(const uint32_t index) {
+  VkRenderPassBeginInfo render_pass_info{};
+  render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  render_pass_info.renderPass = m_draw_render_pass;
+  render_pass_info.framebuffer =
+      m_window->get_swap_chain()->get_frame_buffer(index);
+
+  // Should be dynamic
+  render_pass_info.renderArea.offset = {0, 0};
+  render_pass_info.renderArea.extent = m_window->get_swap_chain()->get_extent();
+
+  VkClearValue clear_values[2] = {};
+  clear_values[0].color = {{0, 1, 1, 1}};
+  clear_values[1].depthStencil = {1.0f, 0};
+
+  render_pass_info.clearValueCount = 2;
+  render_pass_info.pClearValues = clear_values;
+
+  vkCmdBeginRenderPass(m_command_buffer, &render_pass_info,
+                       VK_SUBPASS_CONTENTS_INLINE);
+}
+
+void renderer::record_command_buffer(const uint32_t index) {
+  VkCommandBufferBeginInfo beginInfo{};
+  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+  beginInfo.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+  VK_CHECK(vkBeginCommandBuffer(m_command_buffer, &beginInfo),
+           "Error recording command buffer, index: " + std::to_string(index));
+
+  for (auto &&[label, pipeline] : m_ubiquitous_pipelines) {
+    get_current_scene()->get_draw_calls(
+        label, pipeline->m_draw_calls_mapped,
+        pipeline->m_matrices_array_mapped->matrices,
+        pipeline->m_material_index_mapped->index, &pipeline->m_draw_call_count);
+  }
+  begin_render_pass(index);
+
+  VkViewport viewport{};
+  viewport.x = 0.0f;
+  viewport.y = 0.0f;
+  viewport.width = static_cast<float>(m_swap_chain->get_extent().width);
+  viewport.height = static_cast<float>(m_swap_chain->get_extent().height);
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
+  vkCmdSetViewport(m_command_buffer, 0, 1, &viewport);
+
+  VkRect2D scissor{};
+  scissor.offset = {0, 0};
+  scissor.extent = m_swap_chain->get_extent();
+  vkCmdSetScissor(m_command_buffer, 0, 1, &scissor);
+
+  VkDeviceSize offset = 0;
+
+  get_current_scene()->scene_mesh_manager.bind_indexes(m_command_buffer);
+  for (auto &&[label, pipeline] : m_ubiquitous_pipelines) {
+    if (pipelines_data.at(label).geometry_type == CUI_GEOMETRY_TYPE_2D) {
+      get_current_scene()->scene_mesh_manager.bind_vertices_2d(m_command_buffer,
+                                                               &offset);
+    } else if (pipelines_data.at(label).geometry_type == CUI_GEOMETRY_TYPE_3D) {
+      get_current_scene()->scene_mesh_manager.bind_vertices_3d(m_command_buffer,
+                                                               &offset);
+    } else {
+      ASSERT(true, "Error, pipeline vertex_type = null", TEXT_COLOR_ERROR);
+    }
+    pipeline->render(m_command_buffer);
+    pipeline->m_draw_call_count = 0;
+  }
+  vkCmdEndRenderPass(m_command_buffer);
+
+  VK_CHECK(vkEndCommandBuffer(m_command_buffer),
+           "Error recording command buffer");
 }
 
 } // namespace cui::renderer

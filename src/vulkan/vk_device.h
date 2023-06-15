@@ -79,6 +79,12 @@ public:
   */
   void add_queue(const queue_info info);
 
+  VkFence &get_fence() {return m_fence;}
+
+  void reset_command_pool(const std::string name){
+    vkResetCommandPool(m_device,m_queues[name].command_pool,0);
+  }
+
 private:
   std::array<float, 3> m_queue_priorities;
   std::unordered_map<std::string, queue> m_queues;

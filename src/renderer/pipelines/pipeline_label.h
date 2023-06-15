@@ -29,7 +29,7 @@ enum : geometry_types {
   CUI_GEOMETRY_TYPE_NULL = UINT8_MAX
 };
 
-struct pipeline_data {
+struct pipeline_data_struct {
   const pipeline_types type;
   const geometry_types geometry_type;
   const char *name;
@@ -39,7 +39,7 @@ struct pipeline_data {
   const bool has_default_model;
 };
 
-const std::unordered_map<pipeline_label, pipeline_data> pipelines_data = {
+const std::unordered_map<pipeline_label, pipeline_data_struct> pipelines_data = {
     {CUI_PIPELINE_RASTERIZATION_DEFAULT,
      {CUI_PIPELINE_TYPE_3D, CUI_GEOMETRY_TYPE_3D,
       "CUI_PIPELINE_RASTERIZATION_DEFAULT", 128, false, false, false}},

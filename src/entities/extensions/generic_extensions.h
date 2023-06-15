@@ -98,8 +98,8 @@ struct transform : public extension {
     const bool rotation = m_rotation.is_updated();
     const bool scale = m_scale.is_updated();
 
-    if (!(position || rotation || scale))
-      return;
+  //  if (!(position || rotation || scale))
+   //   return;
 
     m_main_matrix = glm::translate(glm::mat4(1.0f), m_position.data());
     m_main_matrix =
@@ -110,15 +110,19 @@ struct transform : public extension {
     m_main_matrix = glm::rotate(
         m_main_matrix, glm::radians(m_rotation.data().z), {0, 0, 1.0f});
     m_main_matrix = glm::scale(m_main_matrix, m_scale.data());
+    
+    m_main_matrix = glm::mat4(1.0f);
   }
 
   const glm::mat4 &get_main_matrix() { return m_main_matrix; }
 
-private:
-  glm::mat4 m_main_matrix;
+  
   updated_vec_3 m_position;
   updated_vec_3 m_rotation;
   updated_vec_3 m_scale;
+
+private:
+  glm::mat4 m_main_matrix;
 };
 
 using should_draw = uint8_t;
@@ -147,7 +151,7 @@ public:
 
 private:
   renderer::pipeline_label m_pipeline_label = renderer::CUI_PIPELINE_ENUM_MAX;
-  should_draw m_should_draw = CUI_SHOULD_DRAW_ENUM_MAX;
+  should_draw m_should_draw = CUI_SHOULD_DRAW_ALWAYS;
   renderer::mesh *m_mesh = nullptr;
   renderer::material *m_material = nullptr;
   transform *m_transform = nullptr;

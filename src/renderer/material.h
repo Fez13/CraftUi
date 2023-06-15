@@ -23,7 +23,7 @@ public:
                        const uint32_t metallic_texture = 0,
                        const uint32_t normal_texture = 0);
 
-  uint32_t get_index() {
+  const uint32_t get_index() const{
     if (m_populated)
       return m_material_index;
     else {
@@ -78,7 +78,7 @@ public:
 
   static void free_buffer() { s_materials_buffer.free(); }
 
-  vulkan::vk_descriptor_set* set_descriptor_positions(vulkan::vk_descriptor_set_array* dsta);
+  static vulkan::vk_descriptor_set* set_descriptor_positions(vulkan::vk_descriptor_set_array* dsta);
 
   explicit material();
 

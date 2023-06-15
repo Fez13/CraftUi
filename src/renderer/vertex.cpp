@@ -52,7 +52,7 @@ vertex_2d::get_attribute_description() {
   attribute_description[0].offset = offsetof(vertex_2d, position);
 
   attribute_description[1].binding = 0;
-  attribute_description[1].location = 2;
+  attribute_description[1].location = 1;
   attribute_description[1].format = VK_FORMAT_R32G32_SFLOAT;
   attribute_description[1].offset = offsetof(vertex_2d, texture_position);
   return attribute_description;

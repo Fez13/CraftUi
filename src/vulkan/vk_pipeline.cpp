@@ -120,6 +120,13 @@ void vk_rasterization_pipeline::set_viewport_state(
   m_pipeline_create_info.pViewportState = viewPort;
 }
 
+void vk_rasterization_pipeline::update_size() {
+  vkDestroyPipelineLayout(m_device->get_device(), m_pipeline_layout, nullptr);
+  vkDestroyPipeline(m_device->get_device(), m_pipeline, nullptr);
+  create_pipeline_layout(m_size_of_push_data);
+  create_pipeline();
+}
+
 void vk_rasterization_pipeline::pipeline_create_color_blend_state_info(
     const VkBool32 blend, const VkBlendOp colorBlendOp,
     const VkBlendOp alphaBlendOp, const VkBool32 logicOp) {
@@ -181,9 +188,10 @@ void vk_rasterization_pipeline::initialize_default_draw_buffers() {
   m_material_index_mapped =
       m_material_index_array_buffer.get_memory_location<material_index>();
 
-  m_draw_calls_buffer =
-      vk_buffer(m_device, sizeof(VkDrawIndexedIndirectCommand) * MAX_DRAW_COUNT,
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_SHARING_MODE_EXCLUSIVE);
+  m_draw_calls_buffer = vk_buffer(
+      m_device, sizeof(VkDrawIndexedIndirectCommand) * MAX_DRAW_COUNT,
+      VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT,
+      VK_SHARING_MODE_EXCLUSIVE);
   m_draw_calls_buffer.initialize_buffer_memory(
       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
       VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -191,10 +199,12 @@ void vk_rasterization_pipeline::initialize_default_draw_buffers() {
       m_draw_calls_buffer.get_memory_location<VkDrawIndexedIndirectCommand>();
 
   vk_descriptor_set *default_descriptor = m_descriptor_sets.get(0);
-  default_descriptor->update_binding_uniform_buffer(0,
+  default_descriptor->update_binding_uniform_buffer(1,
                                                     &m_matrices_array_buffer);
-  default_descriptor->update_binding_uniform_buffer(
-      1, &m_material_index_array_buffer);
+  
+  vk_descriptor_set *material_descriptor = m_descriptor_sets.get(1);
+  material_descriptor->update_binding_uniform_buffer(
+      3, &m_material_index_array_buffer);
 }
 
 void vk_rasterization_pipeline::create_pipeline() {

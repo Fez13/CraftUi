@@ -5,6 +5,10 @@
 #include "vk_utils.h"
 
 #include <functional>
+
+namespace cui::renderer{
+  class renderer;
+};
 namespace cui::vulkan {
 
 class vk_compute_pipeline {
@@ -33,79 +37,62 @@ private:
 // This is a virtual class for a rasterization pipeline.
 class vk_rasterization_pipeline {
 public:
-
   virtual void initialize() {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+    VIRTUAL_CALL_WARNING();
   }
   virtual void free() {
-    LOG("Warning this is a call from a virtual function, "
-        "this should be overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+    VIRTUAL_CALL_WARNING();
   }
   virtual void render(VkCommandBuffer &cmd) {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
-  }
-  void set_view_port_state(const VkPipelineViewportStateCreateInfo
-                                       &universal_view_port_state_create_info) {
-    m_pipeline_create_info.pViewportState = &universal_view_port_state_create_info;
+    VIRTUAL_CALL_WARNING();
   }
 
-  virtual void update_size() {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+  void update_size();
+
+  void set_fragment_shader(const std::string path) {
+    m_fragment_shader =
+        vk_graphic_shader(path, m_device, VK_SHADER_STAGE_FRAGMENT_BIT);
   }
 
-  void set_fragment_shader(const std::string path){
-    m_fragment_shader = vk_graphic_shader(path,m_device,VK_SHADER_STAGE_FRAGMENT_BIT);
-  }
-  
-  void set_vertex_shader(const std::string path){
-    m_vertex_shader = vk_graphic_shader(path,m_device,VK_SHADER_STAGE_VERTEX_BIT);
+  void set_vertex_shader(const std::string path) {
+    m_vertex_shader =
+        vk_graphic_shader(path, m_device, VK_SHADER_STAGE_VERTEX_BIT);
   }
 
   void set_dynamic_states(const std::vector<VkDynamicState> dynamic_states) {
     m_dynamic_states = dynamic_states;
   }
-  
-  void set_vulkan_device(vk_device *device){
-    m_device = device;
-  }
 
-  void set_render_pass(const VkRenderPass& render_pass){
+  void set_vulkan_device(vk_device *device) { m_device = device; }
+
+  void set_render_pass(const VkRenderPass &render_pass) {
     m_render_pass = render_pass;
   }
-  
-  vk_descriptor_set_array& get_descriptors(){
-    return m_descriptor_sets;
-  }
-  
+
+  vk_descriptor_set_array &get_descriptors() { return m_descriptor_sets; }
+
   virtual void initialize_default_mesh() {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+    VIRTUAL_CALL_WARNING();
   }
 
   virtual void initialize_buffers() {
-    LOG("Warning this is a call from a virtual function, this should be "
-        "overwritten by some derived class.",
-        TEXT_COLOR_WARNING);
+    VIRTUAL_CALL_WARNING();
   }
-  
+
   void set_viewport_state(const VkPipelineViewportStateCreateInfo *viewPort);
-  
+
 protected:
+  virtual void on_size_update() {
+    VIRTUAL_CALL_WARNING();
+  }
+
   VkPipeline m_pipeline;
 
-  
   void initialize_default_draw_buffers();
 
   std::vector<VkDynamicState> m_dynamic_states{};
 
+  uint32_t m_draw_call_count = 0;
   vk_buffer m_draw_calls_buffer;
   VkDrawIndexedIndirectCommand *m_draw_calls_mapped;
 
@@ -119,9 +106,14 @@ protected:
     int index[MAX_MATERIAL_COUNT];
   } * m_material_index_mapped;
 
-  struct camera_data {
+  struct camera_data_p {
     glm::mat4 *view_matrix = nullptr;
     glm::mat4 *projection_matrix = nullptr;
+  } m_camera_data_p;
+
+  struct camera_data {
+    glm::mat4 view_matrix;
+    glm::mat4 projection_matrix;
   } m_camera_data;
 
   vk_descriptor_set_array m_descriptor_sets;
@@ -130,7 +122,7 @@ protected:
   VkSemaphore m_compute_semaphore = nullptr;
   VkSemaphore m_window_semaphore = nullptr;
   size_t m_size_of_push_data = 0;
-  
+
   vk_graphic_shader m_fragment_shader;
   vk_graphic_shader m_vertex_shader;
   VkPipelineShaderStageCreateInfo m_shader_stage_create_info[2];
@@ -199,10 +191,13 @@ protected:
   void pipeline_create_depth_stencil_state_create_info(
       const VkBool32 depthTest = VK_TRUE, const VkBool32 depthWrite = VK_TRUE,
       const VkBool32 depthBounds = VK_FALSE);
-  
+
   void create_pipeline_layout(const size_t size_of_push);
-  
+
   void create_pipeline();
+  
+  friend class renderer::renderer;
+  
 };
 
 } // namespace cui::vulkan

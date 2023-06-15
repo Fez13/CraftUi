@@ -1,5 +1,7 @@
 #include "rasterization_pipeline.h"
-
+#include"../../vendor/glm/gtx/rotate_vector.hpp"
+#include"../../vendor/glm/gtx/vector_angle.hpp"
+#include "../../vendor/glm/gtc/matrix_transform.hpp"
 namespace cui::renderer {
 
 //TODO:
@@ -11,12 +13,12 @@ namespace cui::renderer {
     Populate shaders before pipeline initialization.
 */
 void default_rasterization_2d::initialize() {
-  /*
-    Create a for pipeline specifics 
-  */
-  m_descriptor = m_descriptor_sets.create();
-  m_descriptor->initialize_layout();
-  m_descriptor->allocate_descriptor_set();
+  //Material descriptor
+  material::set_descriptor_positions(&m_descriptor_sets);
+  
+  //Pipeline descriptor
+
+  m_descriptor_sets.lock_array();
   
   pipeline_create_dynamic_state_info();
   pipeline_create_vertex_input_state_info<vertex_2d>();
@@ -38,8 +40,22 @@ void default_rasterization_2d::initialize_buffers() {
 
 void default_rasterization_2d::free() {}
 
-void default_rasterization_2d::render(VkCommandBuffer &cmd) {}
+void default_rasterization_2d::render(VkCommandBuffer &cmd) {
+	const VkDeviceSize offset[] = {0};
+		
+	vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
 
-void default_rasterization_2d::update_size() {}
+	m_descriptor_sets.bind_all(m_pipeline_layout,cmd);
+	
+	//Texture::bindDefaultBuffer(m_mainDescriptorSet.get(), 1, 0);
+	//Material::bindDefaultBuffer(m_mainDescriptorSet.get(), 2);
+			
+	//memcpy(&m_camera_data.view_matrix, m_camera_data_p.view_matrix, sizeof(glm::mat4));
+	//memcpy(&projection, m_camera_data_p.projection_matrix, sizeof(glm::mat4));
+	vkCmdPushConstants(cmd, m_pipeline_layout, VK_SHADER_STAGE_ALL, 0, sizeof(camera_data), &m_camera_data);
+	uint32_t draw_stride = sizeof(VkDrawIndexedIndirectCommand);
+	VkDeviceSize indirect_offset = sizeof(VkDrawIndexedIndirectCommand) * 0;
+	vkCmdDrawIndexedIndirect(cmd, m_draw_calls_buffer.get_buffer(), indirect_offset, 1, draw_stride);
+}
 
 } // namespace cui::renderer

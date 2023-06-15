@@ -27,7 +27,7 @@ public:
 
   void initialize_layout();
 
-  VkDescriptorSetLayout get_layout() { return m_descriptor_set_layout; }
+  VkDescriptorSetLayout get_layout() const { return m_descriptor_set_layout; }
 
   /*
     @brief Shall be called after initialization to allow the descriptor to be
@@ -106,35 +106,25 @@ public:
         (VkDescriptorSet *)std::malloc(sizeof(VkDescriptorSet) * m_data.size());
 
     for (uint32_t i = 0; i < m_data.size(); i++) {
-      descriptor_sets[i] = m_data[i]->get_descriptor_set();
+      descriptor_sets[i] = m_data[i].get_descriptor_set();
     }
     vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0,
                             m_data.size(), descriptor_sets, 0, nullptr);
     std::free(descriptor_sets);
   }
 
-  vk_descriptor_set *get(const uint32_t index) { return m_data[index]; }
+  vk_descriptor_set *get(const uint32_t index) { return &m_data[index]; }
 
   vk_descriptor_set *create() {
-    vk_descriptor_set *obj = vk_descriptor_set::create(m_device);
-    m_data.emplace_back(obj);
-    return obj;
+    m_data.emplace_back(m_device);
+    return &m_data[m_data.size()-1]; 
   };
-
-  void add(vk_descriptor_set *object) {
-    if (std::count(m_data.begin(), m_data.end(), object)) {
-      LOG("vk_descriptor_set_array already contains object",
-          TEXT_COLOR_WARNING);
-    } else {
-      m_data.push_back(object);
-    }
-  }
 
   std::vector<VkDescriptorSetLayout> get_layouts() const {
     std::vector<VkDescriptorSetLayout> array;
     array.resize(m_data.size());
     for (uint32_t i = 0; i < m_data.size(); i++) {
-      array[i] = m_data[i]->get_layout();
+      array[i] = m_data[i].get_layout();
     }
     return array;
   }
@@ -144,7 +134,9 @@ public:
   void lock_array() {
     m_descriptors.resize(m_data.size());
     for (uint32_t i = 0; i < m_data.size(); i++) {
-      m_descriptors[i] = m_data[i]->get_descriptor_set();
+      m_data[i].initialize_layout();
+      m_data[i].allocate_descriptor_set();
+      m_descriptors[i] = m_data[i].get_descriptor_set();
     }
     lock = true;
   }
@@ -153,7 +145,7 @@ public:
 
   void free() {
     for (uint32_t i = 0; i < m_data.size(); i++) {
-      m_data[i]->free();
+      m_data[i].free();
     }
     m_descriptors.clear();
     m_data.clear();
@@ -162,8 +154,8 @@ public:
 private:
   bool lock = false;
   vk_device *m_device = nullptr;
-  std::vector<VkDescriptorSet> m_descriptors;
-  std::vector<vk_descriptor_set *> m_data;
+  std::vector<VkDescriptorSet> m_descriptors = {};
+  std::vector<vk_descriptor_set> m_data = {};
 };
 
 } // namespace cui::vulkan

@@ -34,12 +34,6 @@ public:
   void initialize(const uint32_t width, const uint32_t height, const uint32_t refresh_rate) override;
 
   /*
-   @brief It will create the depth image for the render pass.
-   @warning Any nullptr will generate unexpected behavior.
-   */
-  void create_depth_image(vulkan::vk_image *image, VkRenderPass &render_pass);
-
-  /*
    @brief Returns the main queue family of the swap chain.
    @warning Will return UINT32_MAX if not initialized.
   */
