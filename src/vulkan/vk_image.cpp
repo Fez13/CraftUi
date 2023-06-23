@@ -51,13 +51,60 @@ void create_image_view(const VkImageViewType view_type, const VkFormat format,
            "Fail creating a image view...");
 }
 
+void create_image_sampler(VkSampler &sampler, VkDevice device,
+                          VkFilter magFilter, VkFilter minFilter,
+                          VkBool32 normalizeCordinates, VkBool32 compareOp,
+                          sampler_mode SMD, VkBorderColor borderColor) {
+  const VkPhysicalDevice gpu = vk_graphic_device::get().get_device();
+  VkSamplerCreateInfo samplerInfo{};
+  samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+  samplerInfo.magFilter = VK_FILTER_LINEAR;
+  samplerInfo.minFilter = VK_FILTER_LINEAR;
+
+  samplerInfo.addressModeU = SMD.U;
+  samplerInfo.addressModeV = SMD.V;
+  samplerInfo.addressModeW = SMD.W;
+
+  samplerInfo.anisotropyEnable = VK_FALSE; // TODO:
+  samplerInfo.maxAnisotropy = 1.0f;
+
+  VkPhysicalDeviceProperties properties{};
+  vkGetPhysicalDeviceProperties(gpu, &properties);
+
+  samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+  samplerInfo.borderColor = borderColor;
+  samplerInfo.unnormalizedCoordinates = normalizeCordinates;
+
+  samplerInfo.compareEnable = compareOp;
+  samplerInfo.compareOp = VK_COMPARE_OP_NEVER;
+
+  samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+  samplerInfo.mipLodBias = 0.0f;
+  samplerInfo.minLod = 0.0f;
+  samplerInfo.maxLod = 1.0f;
+  VK_CHECK(vkCreateSampler(device, &samplerInfo, nullptr, &sampler),
+           "Fail creating an image sampler...");
+}
+
 vk_image::vk_image(const void *data, int x, int y,
                    const std::string &device_name, const VkImageTiling tiling,
                    const VkFormat format)
     : m_tiling(tiling), m_format(format) {
   m_device = vk_device_manager::get().get_device(device_name);
+  m_size_x = x;
+  m_size_y = y;
 
-  // TODO
+  vk_buffer stageBuffer =
+      vk_buffer(m_device, x * y * 4,
+                VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_SHARING_MODE_EXCLUSIVE);
+  stageBuffer.initialize_buffer_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+  
+  void *gpu_memory = stageBuffer.get_memory_location<void*>();
+  memcpy(gpu_memory, data, static_cast<size_t>(stageBuffer.get_size()));
+  stageBuffer.unmap_memory();
+
+  fill_image(stageBuffer);
+  stageBuffer.free();
 }
 
 vk_image::vk_image(const std::string path, const std::string device_name,
@@ -70,9 +117,9 @@ vk_image::vk_image(const std::string path, const std::string device_name,
   ASSERT(!image_data, "Error reading image path. path: " + path,
          TEXT_COLOR_ERROR);
 
-  vk_buffer image_data_gpu(
-      m_device, m_size_x * m_size_y * m_texture_channels_count,
-      VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_SHARING_MODE_EXCLUSIVE);
+  vk_buffer image_data_gpu(m_device, m_size_x * m_size_y * 4,
+                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                           VK_SHARING_MODE_EXCLUSIVE);
   image_data_gpu.initialize_buffer_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                                           VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
   void *image_data_gpu_p = image_data_gpu.get_memory_location<void *>();
@@ -147,6 +194,10 @@ void vk_image::create_image() {
 }
 
 void vk_image::free() const {
+  ASSERT(m_dependent,
+         "Error, an dependent image has tried to be freed before it's "
+         "dependency. This can cause unexpected behaviour.",
+         TEXT_COLOR_ERROR);
   vkDestroyImage(m_device->get_device(), m_image, nullptr);
   vkDestroyImageView(m_device->get_device(), m_image_view, nullptr);
   vkFreeMemory(m_device->get_device(), m_memory, nullptr);

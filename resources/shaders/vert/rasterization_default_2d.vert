@@ -16,9 +16,17 @@ layout(push_constant) uniform push_data_buffer {
 }
 push_data;
 
+layout(set = 0, binding = 0) uniform default_buffer_buffer {
+  int window_height;
+  int window_width;
+  float time;
+  uint frame_rate;
+  uint counter;
+} default_buffer;
+
 // Set 0 : default renderer buffers
 layout(set = 0, binding = 1) uniform default_matrix_array_buffer {
-  mat4 matrices[1000000];
+  mat4 matrices[z];
 }
 default_matrix_array;
 
@@ -26,6 +34,8 @@ void main() {
   //
   vec4 word_position = default_matrix_array.matrices[gl_InstanceIndex] *
                        vec4(position_in, 0.0f, 1.0f);
+  word_position.x *= (float(default_buffer.window_height) / float(default_buffer.window_width));
+  
   texture_cordinate_out = texture_cordinate_in;
   fragment_world_position_out = word_position.xyz;
   gl_Position = word_position; // (push_data.projection * push_data.view) * 

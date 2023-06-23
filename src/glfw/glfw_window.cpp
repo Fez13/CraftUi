@@ -14,9 +14,11 @@ void glfw_window::set_window_size(const uint32_t width, const uint32_t height,
   m_update = true;
 }
 
-void glfw_window::set_window_refresh_rate(const float refresh) {
+void glfw_window::set_window_refresh_rate(const uint32_t refresh) {
   glfwWindowHint(GLFW_REFRESH_RATE, refresh);
+  m_swap_chain.set_refresh_rate(refresh);
 }
+
 
 void window_size_callback(GLFWwindow *window, int width, int height) {
   glfw_window::get_main()->set_window_size(width, height, false);
@@ -32,6 +34,9 @@ void glfw_window::initialize(const uint32_t width, const uint32_t height, const 
     VkPhysicalDeviceFeatures2 features = vulkan::physical_device_features();
     VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address =
         vulkan::buffer_address_feature();
+    VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexing_features = vulkan::indexing_features(); 
+    indexing_features.pNext = nullptr;
+    buffer_address.pNext = &indexing_features;
     features.pNext = &buffer_address;
     device_khr_create_data.features_chain = &features;
 
@@ -49,7 +54,7 @@ void glfw_window::initialize(const uint32_t width, const uint32_t height, const 
   m_width = width;
   m_height = height;
   glfwSetWindowSize(m_window, width, height);
-  glfwWindowHint(GLFW_REFRESH_RATE, refresh_rate);
+  set_window_refresh_rate(refresh_rate);
   
   m_device = vulkan::vk_device_manager::get().get_device("DEVICE_KHR");
   m_swap_chain.initialize(m_device, 3);

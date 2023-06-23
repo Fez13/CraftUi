@@ -6,7 +6,25 @@
 
 #include "../vendor/stb/stb_image.h"
 
+namespace cui::renderer{
+  struct material;
+};
+
 namespace cui::vulkan {
+
+
+struct sampler_mode{
+  VkSamplerAddressMode U = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  VkSamplerAddressMode V = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+  VkSamplerAddressMode W = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+};
+
+
+void create_image_sampler(
+    VkSampler &sampler, VkDevice device, VkFilter magFilter,
+    VkFilter minFilter, VkBool32 normalizeCordinates, VkBool32 compareOp,
+    sampler_mode SMD = sampler_mode(),
+    VkBorderColor borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE);
 
 void create_image_view(const VkImageViewType view_type, const VkFormat format,
                        vk_device *device, VkImageView &image_view,
@@ -36,6 +54,7 @@ public:
   void free() const;
 
 private:
+  bool m_dependent = false;
   void fill_image(vk_buffer &buffer);
   void create_image();
 
@@ -50,5 +69,7 @@ private:
   VkDeviceMemory m_memory;
   VkImageView m_image_view;
   vk_device *m_device;
+  
+  friend struct renderer::material;
 };
 } // namespace cui::vulkan

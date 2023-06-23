@@ -51,6 +51,11 @@
 },
 {
   "directory": "/home/federico/CLionProjects/CraftUi/build",
+  "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/renderer/font.cpp.o -c /home/federico/CLionProjects/CraftUi/src/renderer/font.cpp",
+  "file": "/home/federico/CLionProjects/CraftUi/src/renderer/font.cpp"
+},
+{
+  "directory": "/home/federico/CLionProjects/CraftUi/build",
   "command": "/usr/bin/g++ -I/home/federico/CLionProjects/CraftUi/vendor/glm -g -std=gnu++23 -o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o -c /home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp",
   "file": "/home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp"
 },

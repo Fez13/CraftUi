@@ -10,7 +10,9 @@ public:
   virtual void initialize(const uint32_t width, const uint32_t height, const uint32_t refresh_rate){};
   
   vulkan::vk_swap_chain *get_swap_chain() { return &m_swap_chain; }
-  virtual uint32_t get_queue_family() {return 0;}
+  virtual uint32_t get_queue_family() {VIRTUAL_CALL_WARNING(); return 0;}
+  
+  virtual const int get_time() const {VIRTUAL_CALL_WARNING(); return 0;}
   
   const bool get_update(){
     const bool updated = m_update;

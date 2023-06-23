@@ -21,8 +21,8 @@ layout(set = 0, binding = 0) uniform default_buffer_buffer {
   int window_height;
   int window_width;
   float time;
-  int frame_rate;
-  float random_number;
+  uint frame_rate;
+  uint counter;
 }
 default_buffer;
 
@@ -41,7 +41,7 @@ struct material_data {
   int albedo_texture_index;
   int metallic_texture_index;
   int normal_texture_index;
-  float metallic_strength;
+  float albedo_color_strength;
   vec4 albedo_color;
 };
 
@@ -60,4 +60,27 @@ material_material_object_index;
 
 //
 
-void main() { vert_color_out = vec4(1, 1, 1, 1); }
+float random(vec2 st)
+{
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+void main() { 
+  int index = material_material_object_index.materialIndex[instance_index_in];
+  
+  vert_color_out = material_material_array.data[index].albedo_color * material_material_array.data[index].albedo_color_strength;
+  
+  if(material_material_array.data[index].albedo_texture_index != -1){
+    vert_color_out += texture(sampler2D(material_texture_array[material_material_array.data[index].albedo_texture_index],material_image_sampler),texture_cordinate_in) * (1.0f - material_material_array.data[index].albedo_color_strength);
+  }
+  
+  
+  vec2 char_texture_position = texture_cordinate_in + (vec2(1675,1) / 2048.0);
+
+    if(char_texture_position.x > (1701 / 2048.0) || char_texture_position.y > (32  / 2048.0)){
+        vert_color_out = vec4(0,0,0,0);
+        return;
+    }
+  vert_color_out = texture(sampler2D(material_texture_array[material_material_array.data[index].albedo_texture_index],material_image_sampler),char_texture_position);
+  
+}

@@ -53,6 +53,10 @@ public:
   void update_swap_chain();
   void update_images();
   
+  const uint32_t get_refresh_rate() const {return m_refresh_rate;} 
+  
+  void set_refresh_rate(const uint32_t new_refresh_rate) {m_refresh_rate = new_refresh_rate;} 
+  
   VkPresentInfoKHR get_submit_image_info(const uint32_t &index, VkSemaphore wait[]);
 
 private:
@@ -83,7 +87,7 @@ private:
 
   uint32_t m_width = 1;
   uint32_t m_height = 1;
-
+  uint32_t m_refresh_rate = 60;
   VkSurfaceKHR m_surface;
   VkSharingMode m_sharing_mode;
   uint32_t m_queues_indices_count;

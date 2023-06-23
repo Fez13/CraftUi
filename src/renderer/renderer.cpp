@@ -36,11 +36,12 @@ void renderer::update_extents() {
       m_swap_chain->get_extent().width, m_swap_chain->get_extent().height);
 
   update_view_port();
-
+/* TODO
   for (auto &[label, pipeline] : m_occasional_pipelines) {
     pipeline->set_viewport_state(&m_universal_view_port_state);
     pipeline->update_size();
   }
+*/
   for (auto &[label, pipeline] : m_ubiquitous_pipelines) {
     pipeline->set_viewport_state(&m_universal_view_port_state);
     pipeline->update_size();
@@ -160,6 +161,15 @@ void renderer::create_render_passes() {
   }
 }
 
+void renderer::create_semaphore() {
+  VkSemaphoreCreateInfo semaphoreCreateInfo{};
+  semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+  vkCreateSemaphore(m_device->get_device(), &semaphoreCreateInfo, nullptr,
+                    &m_image_wait);
+  vkCreateSemaphore(m_device->get_device(), &semaphoreCreateInfo, nullptr,
+                    &m_render_wait);
+}
+
 void renderer::initialize(window *window) {
   ASSERT(window == nullptr,
          "Error, window can't be a nullptr, window may not be initialized.",
@@ -182,15 +192,32 @@ void renderer::initialize(window *window) {
   m_command_buffer = m_device->create_command_buffers(
       VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1,
       m_device->get_queue("GRAPHIC").command_pool),
+      
+  m_default_buffer = vulkan::vk_buffer(m_device,sizeof(default_buffer_data),VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,VK_SHARING_MODE_EXCLUSIVE);
+  m_default_buffer.initialize_buffer_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+  m_default_buffer.get_memory_location<default_buffer_data>();
   LOG("Renderer initialization done!", TEXT_COLOR_NOTIFICATION);
 }
 
 void renderer::draw() {
-
+  m_counter++;
   // Check for window size changes
   if (m_window->get_update()) {
     update_extents();
   }
+
+  
+
+  //Update default buffer
+  
+  default_buffer_data* data = m_default_buffer.get_memory_location<default_buffer_data>();
+  data->frame_rate = m_window->get_swap_chain()->get_refresh_rate();
+  data->window_height = m_window->get_swap_chain()->get_extent().height;
+  data->window_width = m_window->get_swap_chain()->get_extent().width;
+  data->time = m_window->get_time();
+  data->counter = m_counter; //TODO random number
+
 
   uint32_t image_index = 0;
   m_window->get_swap_chain()->get_next_image(image_index, m_image_wait);
@@ -242,7 +269,7 @@ void renderer::begin_render_pass(const uint32_t index) {
   render_pass_info.renderArea.extent = m_window->get_swap_chain()->get_extent();
 
   VkClearValue clear_values[2] = {};
-  clear_values[0].color = {{0, 1, 1, 1}};
+  clear_values[0].color = {m_clear_color.x,m_clear_color.y,m_clear_color.z,m_clear_color.w};
   clear_values[1].depthStencil = {1.0f, 0};
 
   render_pass_info.clearValueCount = 2;

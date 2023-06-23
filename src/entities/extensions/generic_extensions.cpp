@@ -30,18 +30,18 @@ void drawable::draw() {
   if (m_should_draw == CUI_SHOULD_DRAW_ALWAYS) {
     m_transform->update_main_matrix();
     renderer::get_current_scene()->create_draw_call(
-        m_mesh, m_pipeline_label, m_material, &m_transform->get_main_matrix(),
-        nullptr);
+        m_mesh, m_pipeline_label, m_material, &m_transform->get_main_matrix());
   } else if (m_should_draw == CUI_SHOULD_DRAW_NEVER) {
   } else if (m_should_draw == CUI_SHOULD_DRAW_FUNCTION) {
     // TODO
     if (false) {
       m_transform->update_main_matrix();
       renderer::get_current_scene()->create_draw_call(
-          m_mesh, m_pipeline_label, m_material, &m_transform->get_main_matrix(),
-          nullptr);
+          m_mesh, m_pipeline_label, m_material, &m_transform->get_main_matrix());
     }
   }
 }
+
+  
 
 } // namespace cui::entities::extensions

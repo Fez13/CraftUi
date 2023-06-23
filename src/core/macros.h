@@ -46,7 +46,6 @@ enum : text_color {
 #define VIRTUAL_CALL_WARNING() ;
 
 #endif
-
 namespace macros_functions {
 
 inline void log(const std::string data, text_color color, const char *file,

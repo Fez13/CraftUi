@@ -119,6 +119,13 @@ build CMakeFiles/CraftUI.dir/src/renderer/pipelines/rasterization_pipeline.cpp.o
   OBJECT_DIR = CMakeFiles/CraftUI.dir
   OBJECT_FILE_DIR = CMakeFiles/CraftUI.dir/src/renderer/pipelines
 
+build CMakeFiles/CraftUI.dir/src/renderer/font.cpp.o: CXX_COMPILER__CraftUI_Debug /home/federico/CLionProjects/CraftUi/src/renderer/font.cpp || cmake_object_order_depends_target_CraftUI
+  DEP_FILE = CMakeFiles/CraftUI.dir/src/renderer/font.cpp.o.d
+  FLAGS = -g -std=gnu++23
+  INCLUDES = -I/home/federico/CLionProjects/CraftUi/vendor/glm
+  OBJECT_DIR = CMakeFiles/CraftUI.dir
+  OBJECT_FILE_DIR = CMakeFiles/CraftUI.dir/src/renderer
+
 build CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o: CXX_COMPILER__CraftUI_Debug /home/federico/CLionProjects/CraftUi/src/vulkan/vk_buffer.cpp || cmake_object_order_depends_target_CraftUI
   DEP_FILE = CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o.d
   FLAGS = -g -std=gnu++23
@@ -246,7 +253,7 @@ build CMakeFiles/CraftUI.dir/src/vendor/tinyobjloader/tiny_obj_loader.cpp.o: CXX
 #############################################
 # Link the executable CraftUI
 
-build CraftUI: CXX_EXECUTABLE_LINKER__CraftUI_Debug CMakeFiles/CraftUI.dir/main.cpp.o CMakeFiles/CraftUI.dir/src/core/app.cpp.o CMakeFiles/CraftUI.dir/src/entities/extensions/generic_extensions.cpp.o CMakeFiles/CraftUI.dir/src/renderer/material.cpp.o CMakeFiles/CraftUI.dir/src/renderer/renderer.cpp.o CMakeFiles/CraftUI.dir/src/renderer/window.cpp.o CMakeFiles/CraftUI.dir/src/renderer/scene.cpp.o CMakeFiles/CraftUI.dir/src/renderer/vertex.cpp.o CMakeFiles/CraftUI.dir/src/renderer/mesh.cpp.o CMakeFiles/CraftUI.dir/src/renderer/pipelines/rasterization_pipeline.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_graphic_device.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_instance.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vulkan.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_utils.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_device.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_descriptor_set.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_image.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_pipeline.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_swap_chain.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_shader.cpp.o CMakeFiles/CraftUI.dir/src/shader_compiler/compile_Spir_V.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw_utils.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw_window.cpp.o CMakeFiles/CraftUI.dir/src/vendor/stb/stb.cpp.o CMakeFiles/CraftUI.dir/src/vendor/tinyobjloader/tiny_obj_loader.cpp.o | /usr/lib/x86_64-linux-gnu/libvulkan.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
+build CraftUI: CXX_EXECUTABLE_LINKER__CraftUI_Debug CMakeFiles/CraftUI.dir/main.cpp.o CMakeFiles/CraftUI.dir/src/core/app.cpp.o CMakeFiles/CraftUI.dir/src/entities/extensions/generic_extensions.cpp.o CMakeFiles/CraftUI.dir/src/renderer/material.cpp.o CMakeFiles/CraftUI.dir/src/renderer/renderer.cpp.o CMakeFiles/CraftUI.dir/src/renderer/window.cpp.o CMakeFiles/CraftUI.dir/src/renderer/scene.cpp.o CMakeFiles/CraftUI.dir/src/renderer/vertex.cpp.o CMakeFiles/CraftUI.dir/src/renderer/mesh.cpp.o CMakeFiles/CraftUI.dir/src/renderer/pipelines/rasterization_pipeline.cpp.o CMakeFiles/CraftUI.dir/src/renderer/font.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_buffer.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_graphic_device.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_instance.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vulkan.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_utils.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_device.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_descriptor_set.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_image.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_pipeline.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_swap_chain.cpp.o CMakeFiles/CraftUI.dir/src/vulkan/vk_shader.cpp.o CMakeFiles/CraftUI.dir/src/shader_compiler/compile_Spir_V.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw_utils.cpp.o CMakeFiles/CraftUI.dir/src/glfw/glfw_window.cpp.o CMakeFiles/CraftUI.dir/src/vendor/stb/stb.cpp.o CMakeFiles/CraftUI.dir/src/vendor/tinyobjloader/tiny_obj_loader.cpp.o | /usr/lib/x86_64-linux-gnu/libvulkan.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/home/federico/CLionProjects/CraftUi/vendor/glm  /usr/lib/x86_64-linux-gnu/libvulkan.so  /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
   LINK_PATH = -L/home/federico/CLionProjects/CraftUi/vendor/glm

@@ -7,20 +7,16 @@
 #define TESTING
 #define DESKTOP
 
-//TODO: document
+// TODO: document
 
 namespace cui::vulkan {
-
 
 const struct structure_vulkan_initialization_data {
   const char *application_name = "Cui Test";
   uint32_t application_version = VK_MAKE_VERSION(0, 0, 1);
   uint32_t api_version = VK_API_VERSION_1_3;
-  std::vector<std::string> extensions = {
-      "VK_KHR_xcb_surface",
-      "VK_KHR_surface",
-      "VK_KHR_display",
-  };
+  std::vector<std::string> extensions = {"VK_KHR_xcb_surface", "VK_KHR_surface",
+                                         "VK_KHR_display"};
   std::vector<std::string> layers = {"VK_LAYER_KHRONOS_validation"};
 } vulkan_initialization_data;
 
@@ -97,12 +93,39 @@ inline VkPhysicalDeviceBufferAddressFeaturesEXT buffer_address_feature() {
   return bufferAddress;
 }
 
+inline VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexing_features() {
+  VkPhysicalDeviceDescriptorIndexingFeatures feature;
+  feature.sType =
+      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
+  feature.shaderInputAttachmentArrayDynamicIndexing = VK_FALSE;
+  feature.shaderUniformTexelBufferArrayDynamicIndexing = VK_FALSE;
+  feature.shaderStorageTexelBufferArrayDynamicIndexing = VK_FALSE;
+  feature.shaderUniformBufferArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderSampledImageArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderStorageBufferArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderStorageImageArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderInputAttachmentArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderUniformTexelBufferArrayNonUniformIndexing = VK_FALSE;
+  feature.shaderStorageTexelBufferArrayNonUniformIndexing = VK_FALSE;
+  feature.descriptorBindingUniformBufferUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingSampledImageUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingStorageImageUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingStorageBufferUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingUniformTexelBufferUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingStorageTexelBufferUpdateAfterBind = VK_FALSE;
+  feature.descriptorBindingUpdateUnusedWhilePending = VK_FALSE;
+  feature.descriptorBindingPartiallyBound = VK_FALSE;
+  feature.descriptorBindingVariableDescriptorCount = VK_FALSE;
+  feature.runtimeDescriptorArray = VK_TRUE;
+  return feature;
+}
+
 #ifdef DESKTOP
 
 #define INDEX_TYPE_VULKAN VK_INDEX_TYPE_UINT32
 #define INDEX_TYPE uint32_t
-#define MAX_MATERIAL_COUNT 100 //1000
-#define MAX_TEXTURE_COUNT 50 //500
+#define MAX_MATERIAL_COUNT 100 // 1000
+#define MAX_TEXTURE_COUNT 50   // 500
 #define SHADOW_PASS_DEPTH_FORMAT VK_FORMAT_D16_UNORM
 
 #define MAX_DRAW_COUNT 1000000
@@ -175,8 +198,7 @@ inline std::vector<const char *> device_khr_extensions() {
       VK_KHR_SWAPCHAIN_EXTENSION_NAME,
       VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME,
       VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-      "VK_KHR_deferred_host_operations",
-      "VK_EXT_descriptor_indexing"};
+      "VK_KHR_deferred_host_operations", "VK_EXT_descriptor_indexing"};
   return extensions;
 }
 

@@ -94,12 +94,6 @@ struct transform : public extension {
   }
 
   void update_main_matrix() {
-    const bool position = m_position.is_updated();
-    const bool rotation = m_rotation.is_updated();
-    const bool scale = m_scale.is_updated();
-
-  //  if (!(position || rotation || scale))
-   //   return;
 
     m_main_matrix = glm::translate(glm::mat4(1.0f), m_position.data());
     m_main_matrix =
@@ -110,8 +104,6 @@ struct transform : public extension {
     m_main_matrix = glm::rotate(
         m_main_matrix, glm::radians(m_rotation.data().z), {0, 0, 1.0f});
     m_main_matrix = glm::scale(m_main_matrix, m_scale.data());
-    
-    m_main_matrix = glm::mat4(1.0f);
   }
 
   const glm::mat4 &get_main_matrix() { return m_main_matrix; }

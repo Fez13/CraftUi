@@ -16,12 +16,12 @@ public:
   glfw_window() = default;
   void set_window_size(const uint32_t width, const uint32_t height,
                        const bool update_glfw_window = true);
-  
+
   /*
     @brief Updates the window refresh rate.
   */
-  void set_window_refresh_rate(const float rate);
-
+  void set_window_refresh_rate(const uint32_t rate);
+  
   /*
    Will initialize the window, this shall only be called 1 time.
    @brief This function will check for a device named DEVICE_KHR, if it finds
@@ -31,22 +31,25 @@ public:
    capabilities there will be unexpected behavior.
    @param all Takes the default width,height and refresh_rate of the window.
    */
-  void initialize(const uint32_t width, const uint32_t height, const uint32_t refresh_rate) override;
+  void initialize(const uint32_t width, const uint32_t height,
+                  const uint32_t refresh_rate) override;
 
   /*
    @brief Returns the main queue family of the swap chain.
    @warning Will return UINT32_MAX if not initialized.
   */
   uint32_t get_queue_family() override {
-    if(m_swap_chain.get_queue_family() == UINT32_MAX){
-      LOG("Warning null queue family was returned.",TEXT_COLOR_WARNING);
+    if (m_swap_chain.get_queue_family() == UINT32_MAX) {
+      LOG("Warning null queue family was returned.", TEXT_COLOR_WARNING);
       return UINT32_MAX;
     }
     return m_swap_chain.get_queue_family();
   }
-  
+
+  const int get_time() const override { return glfwGetTime(); }
+
   void free();
-  
+
   GLFWwindow *get_glfw_window() { return m_window; }
 
   static glfw_window *get_main() { return s_main_window; }
